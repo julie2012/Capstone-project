@@ -1,0 +1,701 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sta. Justa National High School | Entrance Examination & Sectioning System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --bg: #f0f4f8;
+            --primary: #17971d;
+            --primary-dark: #117316;
+            --primary-glow: rgba(23, 151, 29, 0.4);
+            --secondary: #224db4;
+            --secondary-dark: #1a3b8a;
+            --secondary-glow: rgba(34, 77, 180, 0.4);
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --text-light: #94a3b8;
+            --line: #e2e8f0;
+            --white: #ffffff;
+            --grid-color: rgba(34, 77, 180, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { display: none; }
+
+        body {
+            background-color: #dbeafe;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.72)),
+                url("img/school-background.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-dark);
+            height: 100vh; 
+            overflow: hidden; 
+            position: center;
+            z-index: 1;
+        }
+
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
+        .shape { position: absolute; border-radius: 50%; filter: blur(100px); animation: floatBlob 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); }
+        .shape-1 { top: -10%; left: -5%; width: 40vw; height: 40vw; background: rgba(255, 255, 255, 0.18); }
+        .shape-2 { bottom: -10%; right: -5%; width: 45vw; height: 45vw; background: rgba(255, 255, 255, 0.16); animation-delay: -5s; }
+        
+        @keyframes floatBlob { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(80px, 100px) scale(1.1); } }
+
+        .page { height: 100%; display: flex; flex-direction: column; padding: 28px 5vw 18px; max-width: 1500px; margin: 0 auto; }
+
+        .topbar { display: flex; align-items: center; justify-content: space-between; animation: fadeInDown 0.8s ease-out forwards; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .brand { display: flex; align-items: center; gap: 14px; font-weight: 900; font-size: 18px; color: var(--text-dark); letter-spacing: -0.5px; }
+        .brand-icon {
+            width: 50px; height: 50px; border-radius: 14px; background: rgba(255,255,255,0.72); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06); border: 1px solid rgba(255,255,255,0.8);
+            transition: transform 0.3s ease;
+        }
+        .brand:hover .brand-icon { transform: scale(1.05); }
+        .brand-logo { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+        .portal-status { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.72); border: 1px solid rgba(23, 151, 29, 0.16); color: var(--primary-dark); border-radius: 99px; padding: 9px 13px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .portal-status i { color: var(--primary); }
+
+        .hero-grid { flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; padding: 30px 0 54px; }
+        .hero-panel { width: 100%; max-width: 1400px; display: grid; grid-template-columns: 1fr; gap: 30px; padding: 30px 24px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+
+        .hero-text {
+            animation: fadeInLeft 1s ease-out forwards;
+            opacity: 0;
+            transform: translateY(16px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 100%;
+            margin: 0;
+            text-align: center;
+        }
+        @keyframes fadeInLeft { to { opacity: 1; transform: translateY(0); } }
+
+        .badge-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(34, 77, 180, 0.18);
+            color: var(--secondary); font-size: 12px; font-weight: 800; text-transform: uppercase;
+            padding: 6px 16px; border-radius: 99px; margin-bottom: 2vh; letter-spacing: 1px;
+        }
+        .badge-tag i { font-size: 14px; animation: pulseIcon 2s infinite; }
+        @keyframes pulseIcon { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .hero-text h1 { font-size: clamp(2.35rem, 5.4vw, 86px); font-weight: 900; text-transform: uppercase; line-height: .98; margin-bottom: 14px; letter-spacing: -2px; color: #0f172a; text-align: center; max-width: 1300px; }
+        .hero-text h1 .title-line { display: block; }
+        .hero-text h1 .title-amp { display: block; font-size: .78em; margin: 4px 0; }
+        .hero-text h1 .highlight { 
+            background: linear-gradient(270deg, var(--primary), var(--secondary), #0ea5e9, var(--primary));
+            background-size: 300% 300%; animation: gradientShift 6s ease infinite;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+        }
+        .hero-text h1 .sub-title {
+            display: block; font-size: clamp(1.1rem, 2vw, 24px); color: var(--text-muted); 
+            text-transform: none; letter-spacing: -0.5px; margin-top: 14px; font-weight: 700;
+        }
+        
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .hero-text p { color: #475569; font-size: clamp(15px, 1.25vw, 19px); font-weight: 500; margin-bottom: 28px; line-height: 1.65; max-width: 820px; text-align: center; }
+
+        .actions { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; }
+        
+        .btn-primary { 
+            min-width: 240px; height: 55px; border-radius: 99px; border: none;
+            background: linear-gradient(135deg, var(--secondary), #3b82f6); color: #fff; 
+            font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 10px 25px var(--secondary-glow); cursor: pointer; position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-primary::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform: skewX(-20deg); transition: 0.5s; }
+        .btn-primary:hover::after { left: 150%; }
+        .btn-primary:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 40px var(--secondary-glow); }
+
+        .features-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 24px; margin-top: 24px; }
+        .feature-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+        .feature-item i { color: var(--primary); font-size: 15px; }
+
+        .admission-summary { border-radius: 20px; padding: 24px; background: linear-gradient(150deg, #183b88, #224db4 62%, #2d65c9); color: #fff; box-shadow: 0 18px 34px rgba(34, 77, 180, .24); display: flex; flex-direction: column; justify-content: center; }
+        .admission-summary .eyebrow { color: #bfdbfe; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+        .admission-summary h2 { font-size: 23px; line-height: 1.15; letter-spacing: -.6px; margin-bottom: 8px; }
+        .admission-summary > p { color: #dbeafe; font-size: 12px; line-height: 1.55; margin-bottom: 22px; }
+        .admission-steps { list-style: none; display: grid; gap: 14px; }
+        .admission-steps li { display: flex; align-items: center; gap: 10px; color: #eff6ff; font-size: 12px; font-weight: 700; }
+        .admission-steps span { width: 25px; height: 25px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .25); color: #fff; font-size: 10px; font-weight: 900; }
+        .summary-note { margin-top: 24px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, .18); color: #bfdbfe; font-size: 11px; font-weight: 600; }
+        .hero-visuals { display: none; }
+        @keyframes fadeInRight { to { opacity: 1; transform: translateX(0); } }
+
+        .visual-center-blob {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 300px; height: 300px; background: linear-gradient(135deg, var(--secondary-glow), var(--primary-glow));
+            border-radius: 50%; filter: blur(40px); z-index: 0;
+        }
+
+        @keyframes bubblePopIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes bubblePopOut {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.5); opacity: 0; }
+        }
+        .swal-bubble-show { animation: bubblePopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important; }
+        .swal-bubble-hide { animation: bubblePopOut 0.2s ease-in forwards !important; }
+
+        footer { 
+            position: absolute; 
+            bottom: 2vh; 
+            left: 0; 
+            width: 100%; 
+            text-align: center; 
+            color: var(--text-light); 
+            font-size: 13px; 
+            font-weight: 600; 
+            animation: fadeInUp 1s ease-out forwards; 
+            opacity: 0; 
+            animation-delay: 0.5s; 
+            z-index: 10; 
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 968px) {
+            body { overflow-y: auto; overflow-x: hidden; height: auto; }
+            .page { height: auto; min-height: 100vh; padding-bottom: 60px; }
+            .hero-grid { text-align: center; gap: 20px; padding: 30px 0 40px; }
+            .hero-panel { grid-template-columns: 1fr; padding: 24px 8px; }
+            .hero-text { align-items: center; }
+            .hero-text h1, .hero-text p { text-align: center; }
+            .actions, .features-list { justify-content: center; }
+            .portal-status { display: none; }
+            .hero-text h1 { font-size: clamp(2rem, 9vw, 58px); letter-spacing: -1px; }
+            .topbar { justify-content: flex-start; }
+            .brand { font-size: clamp(13px, 3.2vw, 18px); gap: 10px; }
+            .brand-icon { width: 44px; height: 44px; }
+            .features-list { gap: 14px; }
+            .subject-grade-grid { grid-template-columns: 1fr; gap: 0; }
+            footer { position: relative; bottom: auto; margin-top: 30px; }
+        }
+
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(12px); display: none; align-items: center; justify-content: center; z-index: 999; opacity: 0; transition: opacity 0.4s ease; padding: 15px; }
+        .modal.show { opacity: 1; }
+
+        .modal-content { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(18px); padding: 30px; border-radius: 24px; width: 100%; max-width: 500px; text-align: left; position: relative; box-shadow: 0 35px 60px -15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.8); transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); max-height: 90vh; overflow-y: auto; }
+        .modal.show .modal-content { transform: scale(1) translateY(0); }
+
+        .close-btn { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-light); transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        .close-btn:hover { background: #fee2e2; color: #ef4444; transform: rotate(90deg); }
+
+        .wizard-progress { display: flex; justify-content: space-between; position: relative; margin-bottom: 20px; }
+        .wizard-progress::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 4px; background: var(--line); transform: translateY(-50%); z-index: 1; border-radius: 10px; }
+        .progress-line { position: absolute; top: 50%; left: 0; width: 0%; height: 4px; background: var(--primary); transform: translateY(-50%); z-index: 2; border-radius: 10px; transition: width 0.4s ease; }
+        .progress-step { width: 28px; height: 28px; background: #fff; border: 3px solid var(--line); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: var(--text-light); z-index: 3; transition: all 0.4s ease; }
+        .progress-step.active { border-color: var(--primary); background: var(--primary); color: #fff; box-shadow: 0 0 10px var(--primary-glow); }
+
+        .modal-content h2 { margin-bottom: 4px; font-weight: 900; font-size: 22px; color: var(--text-dark); letter-spacing: -0.5px; }
+        .modal-content p { color: var(--text-light); font-size: 13px; margin-bottom: 16px; font-weight: 500; }
+
+        .step-container { position: relative; overflow: hidden; min-height: 300px; }
+        .wizard-step { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; visibility: hidden; transform: translateX(50px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .wizard-step.active { position: relative; opacity: 1; visibility: visible; transform: translateX(0); }
+        .wizard-step.exit-left { transform: translateX(-50px); opacity: 0; visibility: hidden; }
+
+        .input-group { margin-bottom: 14px; }
+        .input-group label { display: block; font-size: 11px; font-weight: 800; color: var(--text-light); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group input, .input-group select { width: 100%; padding: 12px 14px; border-radius: 10px; border: 2px solid var(--line); background: #f8fafc; font-size: 14px; font-weight: 600; color: var(--text-dark); outline: none; transition: all 0.3s ease; }
+        .input-group input:hover, .input-group select:hover { border-color: #cbd5e1; }
+        .input-group input:focus, .input-group select:focus { background: #fff; border-color: var(--secondary); box-shadow: 0 4px 15px rgba(34, 77, 180, 0.1); transform: translateY(-1px); }
+        .subject-grade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .subject-grade-grid .input-group { margin-bottom: 14px; }
+        @media (max-width: 968px) {
+            .subject-grade-grid { grid-template-columns: 1fr; gap: 0; }
+        }
+
+        .file-upload-box { border: 2px dashed var(--line); padding: 15px; border-radius: 12px; text-align: center; background: #f8fafc; transition: all 0.3s ease; margin-bottom: 12px; cursor: pointer; position: relative; overflow: hidden; }
+        .file-upload-box:hover { border-color: var(--primary); background: var(--primary-light); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(23, 151, 29, 0.05); }
+        .file-upload-box i { font-size: 24px; color: var(--primary); margin-bottom: 8px; transition: transform 0.3s ease; }
+        .file-upload-box:hover i { transform: scale(1.1); }
+        .file-upload-box input[type="file"] { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-upload-box:focus-within { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(34, 77, 180, 0.15); }
+
+        .wizard-footer { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
+        .btn-nav { padding: 12px 20px; border-radius: 10px; border: none; font-weight: 800; font-size: 13px; cursor: pointer; transition: all 0.3s ease; flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-prev { background: #f1f5f9; color: var(--text-dark); }
+        .btn-prev:hover { background: #e2e8f0; transform: translateX(-2px); }
+        .btn-next { background: var(--secondary); color: #fff; box-shadow: 0 4px 10px var(--secondary-glow); }
+        .btn-next:hover { background: var(--secondary-dark); transform: translateX(2px); box-shadow: 0 6px 15px var(--secondary-glow); }
+        .btn-submit { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; box-shadow: 0 4px 10px var(--primary-glow); }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 15px var(--primary-glow); }
+
+        .rounded-modal { border-radius: 20px !important; padding: 20px !important; }
+    </style>
+</head>
+
+<body>
+
+<div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+</div>
+
+<div class="page">
+    <div class="topbar">
+        <div class="brand">
+            <div class="brand-icon"><img class="brand-logo" src="img/school-logo.jpg" alt="Sta. Justa National High School Logo"></div>
+            <span>STA. JUSTA NATIONAL HIGH SCHOOL</span>
+        </div>
+        <div class="portal-status"><i class="fa-solid fa-circle-check"></i> Official admissions portal</div>
+    </div>
+
+    <main class="hero-grid">
+        <section class="hero-panel">
+            <div class="hero-text">
+                <div class="badge-tag">
+                    <i class="fa-solid fa-bolt"></i> SY 2026-2027 Admissions
+                </div>
+                <h1>
+                    <span class="title-line">Entrance Examination</span>
+                    <span class="title-amp">&amp;</span>
+                    <span class="title-line highlight">Sectioning System</span>
+                    <span class="sub-title">with SMS Notifications</span>
+                </h1>
+                <p>
+                    Welcome to the Sta. Justa National High School official entrance examination and sectioning portal. Secure your slot and verify your track placement online.
+                </p>
+                <div class="actions">
+                    <button class="btn-primary" onclick="openRegister()">
+                        <i class="fa-regular fa-id-card"></i> Begin Registration
+                    </button>
+                </div>
+                
+                <div class="features-list">
+                    <div class="feature-item"><i class="fa-solid fa-circle-check"></i> 100% Online</div>
+                    <div class="feature-item"><i class="fa-solid fa-mobile-screen"></i> SMS Alerts</div>
+                    <div class="feature-item"><i class="fa-solid fa-shield-halved"></i> Secure DB</div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+    
+    <footer>&copy; 2026 Sta. Justa National High School Student Portal</footer>
+</div>
+
+<div class="modal" id="registerModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeRegister()"><i class="fa-solid fa-xmark"></i></button>
+        
+        <div class="wizard-progress">
+            <div class="progress-line" id="wizardLine"></div>
+            <div class="progress-step active" id="prog1">1</div>
+            <div class="progress-step" id="prog2">2</div>
+            <div class="progress-step" id="prog3">3</div>
+        </div>
+
+        <div class="step-container">
+            <div class="wizard-step active" id="step1">
+                <h2>Basic Information</h2>
+                <p>Enter your personal and academic details.</p>
+
+                <div class="input-group">
+                    <label>Learner Reference Number (LRN)</label>
+                    <input type="text" id="regLrn" placeholder="12-digit LRN" maxlength="12">
+                </div>
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="Last Name, First Name M.I. Suffix">
+                </div>
+                <div class="input-group">
+                    <label>Grade Level to Enroll</label>
+                    <select id="regGrade" onchange="updateProgramOptions()">
+                        <option value="" disabled selected>Select Grade Level</option>
+                        <option value="Grade 7">Grade 7</option>
+                        <option value="Grade 11">Grade 11</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Program / Strand</label>
+                    <select id="regProgram">
+                        <option value="" disabled selected>Select Grade Level First</option>
+                    </select>
+                </div>
+
+                <div class="wizard-footer">
+                    <button class="btn-nav btn-next" onclick="nextStep(2)">Proceed <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <div class="wizard-step" id="step2">
+                <h2>Academic Details</h2>
+                <p>Provide your grades and contact info.</p>
+
+                <div class="subject-grade-grid">
+                    <div class="input-group">
+                        <label>Mathematics</label>
+                        <input type="number" id="regMathGrade" min="85" max="100" step="0.01" placeholder="85-100">
+                    </div>
+                    <div class="input-group">
+                        <label>English</label>
+                        <input type="number" id="regEnglishGrade" min="85" max="100" step="0.01" placeholder="85-100">
+                    </div>
+                    <div class="input-group">
+                        <label>Science</label>
+                        <input type="number" id="regScienceGrade" min="85" max="100" step="0.01" placeholder="85-100">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Active Contact Number</label>
+                    <input type="text" id="regContact" placeholder="09XXXXXXXXX" maxlength="11">
+                    <small style="color: var(--primary); font-size: 10px; margin-top: 5px; display: block; font-weight: 700;"><i class="fa-solid fa-circle-info"></i> Used for SMS Notifications</small>
+                </div>
+
+                <div class="wizard-footer">
+                    <button class="btn-nav btn-prev" onclick="nextStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                    <button class="btn-nav btn-next" onclick="nextStep(3)">Requirements <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <div class="wizard-step" id="step3">
+                <h2>Requirement Checklist</h2>
+                <p>Upload clear images or PDFs of your documents.</p>
+
+                <div class="file-upload-box">
+                    <input type="file" id="fileCard" accept="image/*,.pdf" aria-label="Attach Form 138 or report card">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <div style="font-weight: 800; font-size: 14px; color: var(--text-dark);">Form 138 / Report Card</div>
+                    <div id="cardLabel" style="font-size: 12px; font-weight: 600; color: var(--text-light); margin-top: 6px;">Tap here to upload</div>
+                </div>
+
+                <div class="file-upload-box">
+                    <input type="file" id="fileMoral" accept="image/*,.pdf" aria-label="Attach certificate of good moral">
+                    <i class="fa-solid fa-certificate"></i>
+                    <div style="font-weight: 800; font-size: 14px; color: var(--text-dark);">Certificate of Good Moral</div>
+                    <div id="moralLabel" style="font-size: 12px; font-weight: 600; color: var(--text-light); margin-top: 6px;">Tap here to upload</div>
+                </div>
+
+                <div class="wizard-footer">
+                    <button class="btn-nav btn-prev" onclick="nextStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                    <button class="btn-nav btn-submit" onclick="submitApplication()"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref as dbRef, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAlIYMnR-XkQgpffpBYHca0NugpZicfatA",
+        authDomain: "entrance-exam-a5625.firebaseapp.com",
+        databaseURL: "https://entrance-exam-a5625-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "entrance-exam-a5625",
+        storageBucket: "entrance-exam-a5625.firebasestorage.app",
+        messagingSenderId: "714388520551",
+        appId: "1:714388520551:web:3332dd2cac709880f59ec2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const storage = getStorage(app, "gs://entrance-exam-a5625.firebasestorage.app");
+
+    window.openRegister = function() { 
+        const m = document.getElementById("registerModal");
+        m.style.display="flex"; 
+        setTimeout(() => m.classList.add("show"), 10);
+        nextStep(1, true); 
+    }
+    window.closeRegister = function() { 
+        const m = document.getElementById("registerModal");
+        m.classList.remove("show"); 
+        setTimeout(() => m.style.display="none", 400);
+    }
+
+    window.updateProgramOptions = function() {
+        const grade = document.getElementById("regGrade").value;
+        const programSelect = document.getElementById("regProgram");
+        programSelect.innerHTML = "";
+
+        if(grade === "Grade 7") {
+            programSelect.innerHTML += `<option value="Regular">Regular</option>`;
+            programSelect.innerHTML += `<option value="STE">STE (Science, Technology, Engineering)</option>`;
+        } else if(grade === "Grade 11") {
+            programSelect.innerHTML += `<option value="STEM">STEM</option>`;            
+            programSelect.innerHTML += `<option value="ICT">ICT</option>`;
+            programSelect.innerHTML += `<option value="EIM">EIM</option>`;            
+            programSelect.innerHTML += `<option value="SMAW">SMAW</option>`;
+        }
+    }
+
+    function isValidFullName(fullName) {
+        const namePattern = /^[A-Za-z.' -]+,\s+[A-Za-z.' -]+\s+[A-Za-z]\.?(?:\s+(?:Jr\.?|Sr\.?|I|II|III|IV|V))?$/;
+        return namePattern.test(fullName.trim());
+    }
+
+    function showFullNameFormatError() {
+        Swal.fire({
+            title: 'Invalid Full Name Format',
+            text: 'Please use this format: Last Name, First Name M.I. Suffix. Example: Dela Cruz, Juan M. Jr.',
+            icon: 'warning',
+            heightAuto: false
+        });
+    }
+
+    function getProgramExamLabel() {
+        const gradeLevel = document.getElementById("regGrade").value;
+        return gradeLevel === "Grade 7" ? "Grade 7 STE Entrance Examination" : "Grade 11 Entrance Examination";
+    }
+
+    function getProgramInterestLabel() {
+        const gradeLevel = document.getElementById("regGrade").value;
+        return gradeLevel === "Grade 7" ? "Grade 7 STE Program" : "Grade 11";
+    }
+
+    function showGradeLimitNotice() {
+        const studentName = document.getElementById("regName").value.trim() || "Student";
+        const examLabel = getProgramExamLabel();
+        const interestLabel = getProgramInterestLabel();
+
+        Swal.fire({
+            title: 'Grade Requirement Notice',
+            html: `
+                <div style="text-align:left; color:#0f172a; font-size:14px; line-height:1.65;">
+                    <p style="margin:0 0 12px; color:#0f172a;">Dear ${studentName},</p>
+                    <p style="margin:0 0 12px; color:#0f172a;">Thank you for taking the ${examLabel} at Sta. Justa National High School.</p>
+                    <p style="margin:0 0 12px; color:#0f172a;">We encourage you to consider the other available programs or sections offered by the school.</p>
+                    <p style="margin:0 0 12px; color:#0f172a;">Thank you for your interest in the ${interestLabel}.</p>
+                    <p style="margin:0; color:#0f172a; font-weight:800;">- Sta. Justa National High School</p>
+                </div>
+            `,
+            icon: 'info',
+            confirmButtonColor: '#224db4',
+            heightAuto: false
+        });
+    }
+
+    function getSubjectGrades() {
+        return {
+            mathematics: parseFloat(document.getElementById("regMathGrade").value),
+            english: parseFloat(document.getElementById("regEnglishGrade").value),
+            science: parseFloat(document.getElementById("regScienceGrade").value)
+        };
+    }
+
+    function validateSubjectGrades() {
+        const grades = getSubjectGrades();
+        const gradeValues = Object.values(grades);
+
+        if(gradeValues.some((grade) => Number.isNaN(grade))) {
+            Swal.fire({ title: 'Incomplete Data', text: 'Please provide Mathematics, English, and Science grades.', icon: 'warning', heightAuto: false });
+            return false;
+        }
+
+        if(gradeValues.some((grade) => grade < 85)) {
+            showGradeLimitNotice();
+            return false;
+        }
+
+        if(gradeValues.some((grade) => grade > 100)) {
+            Swal.fire({ title: 'Invalid Grade', text: 'Grades must not be higher than 100.', icon: 'warning', heightAuto: false });
+            return false;
+        }
+
+        return true;
+    }
+
+    function calculateSubjectAverage() {
+        const grades = getSubjectGrades();
+        return ((grades.mathematics + grades.english + grades.science) / 3).toFixed(2);
+    }
+
+    window.nextStep = function(stepIndex, bypassValidation = false) {
+        if(!bypassValidation) {
+            if(stepIndex === 2 || stepIndex === 3) {
+                const lrn = document.getElementById("regLrn").value;
+                if(lrn.length !== 12 || isNaN(lrn)) {
+                    Swal.fire({ title: 'Invalid LRN', text: 'LRN must be exactly 12 digits.', icon: 'warning', heightAuto: false }); return;
+                }
+                const fullName = document.getElementById("regName").value;
+                if(!fullName || !document.getElementById("regGrade").value) {
+                    Swal.fire({ title: 'Incomplete Data', text: 'Please fill all basic info fields.', icon: 'warning', heightAuto: false }); return;
+                }
+                if(!isValidFullName(fullName)) {
+                    showFullNameFormatError(); return;
+                }
+            }
+            if(stepIndex === 3) {
+                if(!validateSubjectGrades()) return;
+                if(!document.getElementById("regContact").value) {
+                    Swal.fire({ title: 'Incomplete Data', text: 'Please provide your Contact Number.', icon: 'warning', heightAuto: false }); return;
+                }
+            }
+        }
+
+        document.querySelectorAll('.wizard-step').forEach((step, idx) => {
+            if (idx + 1 < stepIndex) {
+                step.className = 'wizard-step exit-left';
+            } else if (idx + 1 > stepIndex) {
+                step.className = 'wizard-step';
+            } else {
+                step.className = 'wizard-step active';
+            }
+        });
+
+        const progressPercentage = ((stepIndex - 1) / 2) * 100;
+        document.getElementById('wizardLine').style.width = progressPercentage + '%';
+        
+        document.querySelectorAll('.progress-step').forEach((stepEl, idx) => {
+            if (idx + 1 <= stepIndex) stepEl.classList.add('active');
+            else stepEl.classList.remove('active');
+        });
+    }
+
+    function updateFileName(inputId, labelId) {
+        const fileInput = document.getElementById(inputId);
+        const label = document.getElementById(labelId);
+        const file = fileInput.files && fileInput.files[0];
+        label.textContent = file ? `File attached: ${file.name}` : "Tap here to upload";
+        label.style.color = file ? "var(--primary)" : "var(--text-light)";
+    }
+
+    document.getElementById("fileCard").addEventListener("change", () => updateFileName("fileCard", "cardLabel"));
+    document.getElementById("fileMoral").addEventListener("change", () => updateFileName("fileMoral", "moralLabel"));
+
+    function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function uploadRequirementFile(file, pathPrefix, fallbackName) {
+        try {
+            const safeFileName = file.name.replace(/[^\w.\-]+/g, "_");
+            const filePath = `${pathPrefix}/${fallbackName}_${safeFileName}`;
+            const uploadTask = await uploadBytesResumable(storageRef(storage, filePath), file);
+            return await getDownloadURL(uploadTask.ref);
+        } catch (error) {
+            console.warn("Firebase Storage upload failed. Saving requirement with applicant record instead.", error);
+            return await fileToDataUrl(file);
+        }
+    }
+
+    window.submitApplication = async function() {
+        const cardFile = document.getElementById("fileCard").files[0];
+        const moralFile = document.getElementById("fileMoral").files[0];
+        const lrn = document.getElementById("regLrn").value;
+        const program = document.getElementById("regProgram").value;
+        const fullName = document.getElementById("regName").value;
+
+        if(!isValidFullName(fullName)) {
+            showFullNameFormatError(); return;
+        }
+
+        if(!validateSubjectGrades()) return;
+
+        if(!cardFile || !moralFile) {
+            Swal.fire({ title: 'Missing Requirements', text: 'Please upload both your Form 138 and Good Moral certificate.', icon: 'warning', heightAuto: false }); return;
+        }
+
+        Swal.fire({
+            title: 'Processing Registration',
+            html: '<b style="color:var(--primary);">Securely uploading your files...</b><br>Please do not close this window.',
+            allowOutsideClick: false,
+            heightAuto: false,
+            didOpen: () => { Swal.showLoading() }
+        });
+
+        try {
+            const requirementPath = `requirements/${lrn}`;
+            const cardDownloadUrl = await uploadRequirementFile(cardFile, requirementPath, "form138");
+            const moralDownloadUrl = await uploadRequirementFile(moralFile, requirementPath, "goodmoral");
+
+            const applicantData = {
+                lrn: lrn,
+                fullname: document.getElementById("regName").value,
+                grade_level: document.getElementById("regGrade").value,
+                program: program,
+                grades: {
+                    mathematics: document.getElementById("regMathGrade").value,
+                    english: document.getElementById("regEnglishGrade").value,
+                    science: document.getElementById("regScienceGrade").value
+                },
+                gwa: calculateSubjectAverage(),
+                contact: document.getElementById("regContact").value,
+                status: "Pending Verification",
+                requirements: {
+                    form138_url: cardDownloadUrl,
+                    good_moral_url: moralDownloadUrl
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            await set(dbRef(db, 'pending_applicants/' + lrn), applicantData);
+            
+            closeRegister();
+
+            let successMessageHtml = "";
+            if (program === "Regular") {
+                successMessageHtml = `We have received your application, <b>${applicantData.fullname}</b>.<br><br>
+                                      <div style="background: #effaf1; padding: 15px; border-radius: 12px; margin-top: 10px;">
+                                      <span style="color: var(--primary); font-size: 14px; font-weight: 700;">
+                                      <i class="fa-solid fa-mobile-screen"></i> Please wait for SMS confirmation of your section.
+                                      </span></div>`;
+            } else {
+                successMessageHtml = `We have received your application, <b>${applicantData.fullname}</b>.<br><br>
+                                      <div style="background: #effaf1; padding: 15px; border-radius: 12px; margin-top: 10px;">
+                                      <span style="color: var(--primary); font-size: 14px; font-weight: 700;">
+                                      <i class="fa-regular fa-calendar-check"></i> Please wait for the schedule of your upcoming Entrance Examination.
+                                      </span></div>`;
+            }
+
+            setTimeout(() => {
+                Swal.fire({
+                    title: 'Application Submitted!',
+                    html: successMessageHtml,
+                    icon: 'success',
+                    confirmButtonColor: '#17971d',
+                    heightAuto: false
+                });
+            }, 500);
+
+            document.getElementById("regLrn").value = "";
+            document.getElementById("regName").value = "";
+            document.getElementById("regMathGrade").value = "";
+            document.getElementById("regEnglishGrade").value = "";
+            document.getElementById("regScienceGrade").value = "";
+            document.getElementById("regContact").value = "";
+            document.getElementById("fileCard").value = "";
+            document.getElementById("fileMoral").value = "";
+            document.getElementById("cardLabel").innerText = "Tap here to upload";
+            document.getElementById("moralLabel").innerText = "Tap here to upload";
+
+        } catch (error) {
+            console.error("Upload Error: ", error);
+            Swal.fire({ title: 'Upload Failed', text: 'There was an error uploading your files. Please check your internet connection.', icon: 'error', heightAuto: false });
+        }
+    }
+</script>
+</body>
+</html>

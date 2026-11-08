@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Entrance Exam | Sta. Justa National High School</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --bg: #f0f4f8;
+            --primary: #17971d;
+            --primary-dark: #117316;
+            --primary-glow: rgba(23, 151, 29, 0.4);
+            --secondary: #224db4;
+            --secondary-glow: rgba(34, 77, 180, 0.4);
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --text-light: #94a3b8;
+            --line: #e2e8f0;
+            --grid-color: rgba(34, 77, 180, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: #dbeafe;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.72)),
+                url("img/school-background.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
+        .shape { position: absolute; border-radius: 50%; filter: blur(100px); animation: floatBlob 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); }
+        .shape-1 { top: -10%; left: -5%; width: 40vw; height: 40vw; background: rgba(255, 255, 255, 0.16); }
+        .shape-2 { bottom: -10%; right: -5%; width: 45vw; height: 45vw; background: rgba(255, 255, 255, 0.14); animation-delay: -5s; }
+        
+        @keyframes floatBlob { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(80px, 100px) scale(1.1); } }
+
+        .exam-container {
+            background: rgba(255, 255, 255, 0.84);
+            backdrop-filter: blur(24px);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.7);
+            width: 100%;
+            max-width: 750px;
+            max-height: 98vh;
+            padding: 30px 40px;
+            position: relative;
+            overflow-y: auto;
+            transition: all 0.4s ease;
+        }
+
+        .exam-container::-webkit-scrollbar { width: 6px; }
+        .exam-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed #cbd5e1;
+        }
+        
+        .brand { 
+            font-weight: 900; font-size: 18px; color: var(--secondary); 
+            display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px;
+        }
+        .brand-icon-wrap {
+            background: #ffffff;
+            color: #fff; width: 38px; height: 38px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 16px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.12);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .brand-icon-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .timer-box {
+            background: #fff0f0; color: #ef4444; font-weight: 900;
+            padding: 8px 16px; border-radius: 99px; font-size: 14px;
+            display: flex; align-items: center; gap: 8px; display: none;
+            border: 1px solid #fecaca; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
+            letter-spacing: 1px; animation: pulseTimer 2s infinite;
+        }
+        @keyframes pulseTimer { 0%, 100% { box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15); } 50% { box-shadow: 0 4px 25px rgba(239, 68, 68, 0.3); } }
+
+        #loginScreen, #subjectMenuScreen, #examScreen, #resultScreen { display: none; }
+        #loginScreen.active, #subjectMenuScreen.active, #examScreen.active, #resultScreen.active { display: block; animation: slideUpFade 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .login-title { font-size: 28px; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; color: var(--text-dark); }
+        .login-desc { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; line-height: 1.6; font-weight: 500; }
+        
+        .input-group input {
+            width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #cbd5e1;
+            font-size: 16px; font-weight: 800; outline: none; margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.8); transition: all 0.3s;
+            text-align: center; letter-spacing: 2px;
+        }
+        .input-group input:focus { border-color: var(--secondary); background: #fff; box-shadow: 0 10px 25px var(--secondary-glow); transform: translateY(-2px); }
+
+        .btn {
+            width: 100%; padding: 14px; border-radius: 12px; border: none;
+            background: linear-gradient(135deg, var(--secondary), #3b82f6) !important; color: #fff !important; 
+            font-weight: 800; font-size: 14px; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase;
+            box-shadow: 0 10px 25px var(--secondary-glow) !important; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform: skewX(-20deg); transition: 0.5s; }
+        .btn:hover::after { left: 150%; }
+        .btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 35px var(--secondary-glow) !important; }
+        .btn:active { transform: translateY(2px) scale(0.98); }
+
+        .btn.btn-success { background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; box-shadow: 0 10px 25px var(--primary-glow) !important; color: #ffffff !important; border: none !important; }
+        .btn.btn-success:hover { box-shadow: 0 15px 35px var(--primary-glow) !important; }
+
+        .btn.btn-outline { background: #fff !important; border: 2px solid #cbd5e1 !important; color: var(--text-muted) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important; }
+        .btn.btn-outline:hover { background: #f8fafc !important; color: var(--text-dark) !important; border-color: #94a3b8 !important; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.08) !important; }
+
+        /* Subject Menu */
+        .subject-btn {
+            background: #fff; border: 2px solid #cbd5e1; padding: 20px 25px; border-radius: 16px;
+            font-size: 16px; font-weight: 800; color: var(--text-dark); cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between; transition: all 0.3s;
+        }
+        .subject-btn:hover { border-color: var(--secondary); box-shadow: 0 10px 25px rgba(34, 77, 180, 0.1); transform: translateY(-2px); }
+        .subject-btn.completed { background: #f0fdf4; border-color: #10b981; color: #10b981; cursor: not-allowed; transform: none; box-shadow: none; pointer-events: none; }
+        .subject-btn i { font-size: 20px; margin-right: 10px; color: inherit; }
+        .final-submit-panel {
+            display: none;
+            margin-top: 18px;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        }
+        .final-submit-panel.show { display: block; }
+        .final-submit-panel p {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .score-breakdown {
+            display: grid;
+            gap: 10px;
+            margin: 14px 0 0;
+            text-align: left;
+        }
+        .score-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            background: rgba(248, 250, 252, 0.84);
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+        .score-row span:first-child { color: var(--text-muted); }
+        .score-row span:last-child { color: var(--text-dark); font-size: 15px; text-align: right; }
+        .score-row.total,
+        .score-row.rating {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+        .score-row.rating span:last-child {
+            color: var(--secondary);
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .nav-buttons { display: flex; justify-content: space-between; gap: 15px; }
+        #prevBtn { width: 35%; } #nextBtn, #submitBtn { width: 65%; }
+
+        .progress-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .progress-text { font-size: 12px; font-weight: 800; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; background: var(--secondary-glow); padding: 6px 14px; border-radius: 8px; }
+        
+        .question-text { font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 20px; line-height: 1.4; letter-spacing: -0.2px; }
+        
+        .options-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
+        .option-label { display: flex; align-items: center; gap: 14px; padding: 14px 20px; background: rgba(255, 255, 255, 0.6); border: 2px solid var(--line); border-radius: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; color: var(--text-muted); font-size: 14px; position: relative; overflow: hidden; }
+        .option-label:hover { border-color: #93c5fd; background: #fff; transform: scale(1.01); box-shadow: 0 5px 15px rgba(34, 77, 180, 0.08); }
+        .option-label input[type="radio"] { display: none; }
+        .custom-radio { width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; background: #fff; flex-shrink: 0; }
+        .custom-radio::after { content: ''; width: 10px; height: 10px; background: var(--secondary); border-radius: 50%; transform: scale(0); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .option-label input[type="radio"]:checked + .custom-radio { border-color: var(--secondary); box-shadow: 0 0 0 3px var(--secondary-glow); }
+        .option-label input[type="radio"]:checked + .custom-radio::after { transform: scale(1); }
+        .option-label input[type="radio"]:checked ~ .option-text { color: var(--secondary); font-weight: 800; }
+        .option-label.selected { border-color: var(--secondary); background: #eff6ff; box-shadow: 0 5px 20px var(--secondary-glow); transform: scale(1.02); }
+
+        .result-icon { font-size: 70px; color: var(--primary); margin-bottom: 15px; text-align: center; animation: popIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .result-title { text-align: center; font-size: 30px; font-weight: 900; margin-bottom: 12px; letter-spacing: -1px; color: var(--text-dark); }
+        .result-desc { text-align: center; color: var(--text-muted); line-height: 1.6; font-size: 14px; font-weight: 500; background: rgba(248, 250, 252, 0.88); padding: 20px; border-radius: 16px; border: 1px solid #dbeafe; }
+        .student-result-name {
+            display: block;
+            color: var(--text-dark);
+            font-size: 20px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .student-result-label {
+            display: block;
+            color: var(--text-light);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        
+        .rounded-modal { border-radius: 20px !important; padding: 20px !important; }
+    </style>
+</head>
+<body>
+
+<div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+</div>
+
+<div class="exam-container">
+    <div class="exam-header">
+        <div class="brand">
+            <div class="brand-icon-wrap"><img src="img/school-logo.jpg" alt="Sta. Justa National High School Logo"></div>
+            <span id="examTitleLevel">Entrance Exam</span>
+        </div>
+        <div class="timer-box" id="timerDisplay"><i class="fa-solid fa-stopwatch"></i> <span id="timeRemaining">00:00</span></div>
+    </div>
+
+    <!-- 1. LOGIN SCREEN -->
+    <div id="loginScreen" class="active">
+        <h2 class="login-title">Student Login</h2>
+        <p class="login-desc">Enter your 12-digit Learner Reference Number (LRN) to access the placement assessment. Ensure a stable connection before proceeding.</p>
+        
+        <div class="input-group">
+            <input type="text" id="studentLrn" placeholder="12-DIGIT LRN" maxlength="12">
+        </div>
+        <button class="btn" onclick="startExam()"><i class="fa-solid fa-fingerprint"></i> Start Exam</button>
+    </div>
+
+    <div id="subjectMenuScreen">
+        <h2 class="login-title" style="text-align: center;">Select Subject</h2>
+                
+        <div class="options-grid">
+            <div class="subject-btn" id="btn-sub-math">
+                <span><i class="fa-solid fa-calculator"></i> MATHEMATICS</span> <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <div class="subject-btn" id="btn-sub-science">
+                <span><i class="fa-solid fa-flask"></i> SCIENCE</span> <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <div class="subject-btn" id="btn-sub-english">
+                <span><i class="fa-solid fa-book-open"></i> ENGLISH</span> <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+        <div class="final-submit-panel" id="finalSubmitPanel">
+            <p>All three subjects are complete. Submit your exam to generate and save your final result.</p>
+            <button class="btn btn-success" onclick="finalSubmitExam()">Submit</button>
+        </div>
+    </div>
+
+    <!-- 3. ACTIVE EXAM SCREEN -->
+    <div id="examScreen">
+        <div class="progress-container">
+            <div class="progress-text">Question <span id="currentQNum">1</span> of <span id="totalQNum">0</span></div>
+        </div>
+        <div class="question-text" id="questionText">Loading sequence...</div>
+        
+        <div class="options-grid" id="optionsGrid">
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn btn-outline" id="prevBtn" onclick="changeQuestion(-1)" style="visibility: hidden;"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <button class="btn" id="nextBtn" onclick="changeQuestion(1)">Next <i class="fa-solid fa-arrow-right"></i></button>
+            <button class="btn btn-success" id="submitBtn" onclick="submitExam()" style="display: none;">Submit</button>
+        </div>
+    </div>
+
+    <!-- 4. FINAL RESULT SCREEN -->
+    <div id="resultScreen">
+        <div class="result-icon"><i class="fa-solid fa-shield-check"></i></div>
+        <h2 class="result-title">Final Results</h2>
+        <div class="result-desc" id="resultDescText">Your responses have been successfully encoded to the system. The AI Placement Engine will formulate your results along with your GWA. You will receive an automated SMS regarding your designated track.</div>
+        <br>
+        <button class="btn btn-outline" style="width: 100%;" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Return to Main Menu</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref as dbRef, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAlIYMnR-XkQgpffpBYHca0NugpZicfatA",
+        authDomain: "entrance-exam-a5625.firebaseapp.com",
+        databaseURL: "https://entrance-exam-a5625-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "entrance-exam-a5625",
+        storageBucket: "entrance-exam-a5625.firebasestorage.app",
+        messagingSenderId: "714388520551",
+        appId: "1:714388520551:web:3332dd2cac709880f59ec2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Global System States
+    let examQuestions = []; 
+    let subjectQuestions = { math: [], science: [], english: [] };
+    let currentSubject = "";
+    
+    let currentQuestion = 0;
+    let userAnswers = [];
+    let studentData = null;
+    let studentLrnGlobal = "";
+    
+    let timeLimit = 0;
+    let timerInterval;
+
+    window.startExam = async function() {
+        const lrn = document.getElementById('studentLrn').value;
+        if(lrn.length !== 12 || isNaN(lrn)) {
+            Swal.fire({title: 'Access Denied', text: 'Please enter a valid 12-digit LRN.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }}); return;
+        }
+
+        Swal.fire({ title: 'Authenticating...', allowOutsideClick: false, heightAuto: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
+
+        try {
+            const studentRef = dbRef(db, 'students/' + lrn);
+            const snapshot = await get(studentRef);
+
+            if(snapshot.exists()) {
+                studentData = snapshot.val();
+                studentLrnGlobal = lrn;
+
+                // INITIALIZE PROGRESS TRACKERS KUNG WALA PA (BOTH G7 AT G11)
+                if (!studentData.completed_subjects) {
+                    studentData.completed_subjects = { math: false, science: false, english: false };
+                }
+                if (!studentData.subject_scores) {
+                    studentData.subject_scores = { math: 0, science: 0, english: 0 };
+                }
+
+                if(studentData.exam_score_raw !== undefined || studentData.exam_status === "Exam Completed") {
+                    Swal.fire({
+                        title: 'Exam Completed', 
+                        text: 'You have already taken and submitted the entrance exam. Retaking is not allowed.', 
+                        icon: 'info', 
+                        heightAuto: false, customClass: { popup: 'rounded-modal' }
+                    });
+                    return;
+                }
+
+                if(studentData.exam_status === "Qualified for Exam" || studentData.exam_status === "Taking Exam") {
+                    
+                    let targetLevel = studentData.grade_level; 
+                    let program = studentData.program || studentData.track || "Regular";
+
+                    if(targetLevel === "Grade 7" && program === "STE") {
+                        targetLevel = "Grade 7 STE";
+                    }
+
+                    document.getElementById('examTitleLevel').innerText = targetLevel + " Modules";
+
+                    // QUEUE CHECKING (Base sa capacity limit)
+                    Swal.fire({ title: 'Scanning Server Slots...', allowOutsideClick: false, heightAuto: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
+                    
+                    const rulesSnap = await get(dbRef(db, 'placement_rules/' + program));
+                    let maxCapacity = 40; 
+                    if (rulesSnap.exists()) {
+                        maxCapacity = parseInt(rulesSnap.val().capacity) || 40;
+                    }
+
+                    const allStudentsSnap = await get(dbRef(db, 'students'));
+                    let activeExaminees = 0;
+                    
+                    if (allStudentsSnap.exists()) {
+                        const allStuds = allStudentsSnap.val();
+                        Object.values(allStuds).forEach(s => {
+                            if ((s.program === program || s.track === program) && s.exam_status === "Taking Exam") {
+                                activeExaminees++;
+                            }
+                        });
+                    }
+
+                    if (studentData.exam_status !== "Taking Exam" && activeExaminees >= maxCapacity) {
+                        let countdown = 15; 
+                        let queueTimerInterval;
+
+                        Swal.fire({
+                            title: 'Exam Slots Full',
+                            html: `
+                                <div style="font-size: 42px; font-weight: 900; color: #ef4444; margin: 10px 0; letter-spacing: -1px;">
+                                    ${activeExaminees} <span style="font-size: 20px; color: #94a3b8;">/ ${maxCapacity}</span>
+                                </div>
+                                <div style="font-size: 12px; font-weight: 800; color: #475569; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    Occupied Slots for ${program}
+                                </div>
+                                <div style="background: #eff6ff; padding: 16px; border-radius: 12px; border: 1px solid #bfdbfe;">
+                                    <b style="color: #1d4ed8; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                        <i class="fa-solid fa-arrows-rotate fa-spin"></i> Auto-checking in <span id="queueCountdown" style="font-size: 18px;">${countdown}</span>s
+                                    </b>
+                                    <div style="font-size: 11px; color: #3b82f6; margin-top: 6px; font-weight: 600;">Please do not close this window. You are in queue.</div>
+                                </div>
+                            `,
+                            icon: 'warning', heightAuto: false, showConfirmButton: false, allowOutsideClick: false, customClass: { popup: 'rounded-modal' },
+                            didOpen: () => {
+                                queueTimerInterval = setInterval(() => {
+                                    countdown--;
+                                    const timerEl = document.getElementById('queueCountdown');
+                                    if(timerEl) timerEl.innerText = countdown;
+
+                                    if(countdown <= 0) {
+                                        clearInterval(queueTimerInterval);
+                                        Swal.close();
+                                        startExam(); 
+                                    }
+                                }, 1000);
+                            },
+                            willClose: () => { clearInterval(queueTimerInterval); }
+                        });
+                        return;
+                    }
+
+                    if (studentData.exam_status !== "Taking Exam") {
+                        await update(dbRef(db, 'students/' + lrn), { exam_status: "Taking Exam" });
+                    }
+
+                    Swal.fire({ title: 'Downloading Exam Matrix...', allowOutsideClick: false, heightAuto: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
+                    
+                    const qRef = dbRef(db, 'questions/' + targetLevel);
+                    const qSnap = await get(qRef);
+
+                    if (!qSnap.exists()) {
+                        Swal.fire({title: 'System Error', text: 'No questions are configured for your grade level yet. Please contact the administrator.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+                        return;
+                    }
+
+                    const subjectsData = qSnap.val() || {};
+                    let hasQuestions = false;
+                    
+                    subjectQuestions = { math: [], science: [], english: [] };
+                    Object.keys(subjectsData).forEach(subj => {
+                        let s = subj.toLowerCase();
+                        if (['math', 'science', 'english'].includes(s)) {
+                            Object.keys(subjectsData[subj]).forEach(qId => {
+                                let q = subjectsData[subj][qId];
+                                subjectQuestions[s].push({
+                                    q: q.text,
+                                    options: [`A) ${q.options.A}`, `B) ${q.options.B}`, `C) ${q.options.C}`, `D) ${q.options.D}`],
+                                    answer: q.correct === 'A' ? 0 : q.correct === 'B' ? 1 : q.correct === 'C' ? 2 : 3
+                                });
+                                hasQuestions = true;
+                            });
+                            subjectQuestions[s].sort(() => Math.random() - 0.5);
+                        }
+                    });
+
+                    if (!hasQuestions) {
+                        Swal.fire({title: 'System Error', text: 'No recognized subject questions found for your grade level.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+                        return;
+                    }
+
+                    Swal.close();
+                    document.getElementById('loginScreen').classList.remove('active');
+                    document.getElementById('subjectMenuScreen').classList.add('active');
+                    window.updateSubjectMenu();
+
+                } else {
+                    let currentStat = studentData.exam_status || "Pending Verification";
+                    Swal.fire({
+                        title: 'Clearance Required',
+                        html: `Your current status is: <b>${currentStat}</b>.<br><br><b style="color:var(--primary);">Please wait for an SMS text</b> indicating your clearance before executing the exam module.`,
+                        icon: 'warning', heightAuto: false, customClass: { popup: 'rounded-modal' }
+                    });
+                }
+            } else {
+                Swal.fire({title: 'Invalid Credentials', text: 'Record not found. Ensure you are registered and cleared by the admin server.', icon: 'warning', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+            }
+        } catch(error) {
+            Swal.fire({title: 'Connection Lost', text: 'Failed to establish link with the database.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+        }
+    }
+
+    // UPDATE SUBJECT MENU (UNIVERSAL)
+    window.updateSubjectMenu = function() {
+        ['math', 'science', 'english'].forEach(sub => {
+            let btn = document.getElementById('btn-sub-' + sub);
+            let totalQ = subjectQuestions[sub].length;
+            
+            if (studentData.completed_subjects[sub]) {
+                btn.className = "subject-btn completed";
+                btn.innerHTML = `<span><i class="fa-solid fa-circle-check"></i> ${sub.toUpperCase()}</span> <span style="font-size:12px;">${studentData.subject_scores[sub]} / ${totalQ}</span>`;
+                btn.onclick = null;
+            } else {
+                btn.className = "subject-btn";
+                btn.innerHTML = `<span><i class="fa-solid fa-book"></i> ${sub.toUpperCase()}</span> <i class="fa-solid fa-chevron-right"></i>`;
+                btn.onclick = () => startSubject(sub);
+            }
+        });
+        const allDone = studentData.completed_subjects.math && studentData.completed_subjects.science && studentData.completed_subjects.english;
+        document.getElementById('finalSubmitPanel').classList.toggle('show', allDone);
+    }
+
+    // START SPECIFIC SUBJECT
+    window.startSubject = function(sub) {
+        if (subjectQuestions[sub].length === 0) {
+            Swal.fire('No Questions', `No questions configured for ${sub.toUpperCase()} in the database. Auto-completing module.`, 'info');
+            studentData.completed_subjects[sub] = true;
+            studentData.subject_scores[sub] = 0;
+            updateSubjectMenu();
+            checkIfAllCompleted();
+            return;
+        }
+        
+        currentSubject = sub;
+        examQuestions = subjectQuestions[sub];
+        userAnswers = new Array(examQuestions.length).fill(null);
+        currentQuestion = 0;
+        
+        document.getElementById('subjectMenuScreen').classList.remove('active');
+        document.getElementById('examScreen').classList.add('active');
+        document.getElementById('timerDisplay').style.display = 'flex';
+        document.getElementById('examTitleLevel').innerText = `${studentData.grade_level} - ${sub.toUpperCase()}`;
+        
+        document.getElementById('totalQNum').innerText = examQuestions.length;
+        
+        timeLimit = 20 * 60;
+        loadQuestion();
+        startTimer();
+    }
+
+    function loadQuestion() {
+        const qData = examQuestions[currentQuestion];
+        document.getElementById('currentQNum').innerText = currentQuestion + 1;
+        document.getElementById('questionText').innerText = qData.q;
+        
+        const optionsGrid = document.getElementById('optionsGrid');
+        optionsGrid.innerHTML = "";
+
+        qData.options.forEach((opt, index) => {
+            const isChecked = userAnswers[currentQuestion] === index ? "checked" : "";
+            const isSelectedClass = userAnswers[currentQuestion] === index ? "selected" : "";
+            
+            optionsGrid.innerHTML += `
+                <label class="option-label ${isSelectedClass}" onclick="selectOption(this, ${index})">
+                    <input type="radio" name="q_option" value="${index}" ${isChecked}>
+                    <div class="custom-radio"></div>
+                    <div class="option-text">${opt}</div>
+                </label>
+            `;
+        });
+
+        document.getElementById('prevBtn').style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+        
+        if (currentQuestion === examQuestions.length - 1) {
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'flex';
+        } else {
+            document.getElementById('nextBtn').style.display = 'flex';
+            document.getElementById('submitBtn').style.display = 'none';
+        }
+    }
+
+    window.selectOption = function(element, index) {
+        document.querySelectorAll('.option-label').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        element.querySelector('input').checked = true;
+        userAnswers[currentQuestion] = index;
+    }
+
+    window.changeQuestion = function(step) {
+        currentQuestion += step;
+        loadQuestion();
+    }
+
+    window.submitExam = function() {
+        const unansweredNumbers = userAnswers
+            .map((ans, index) => ans === null ? index + 1 : null)
+            .filter(number => number !== null);
+        const unanswered = unansweredNumbers.length;
+        if(unanswered > 0) {
+            const formattedNumbers = unansweredNumbers.length === 1
+                ? `${unansweredNumbers[0]}`
+                : `${unansweredNumbers.slice(0, -1).join(', ')}${unansweredNumbers.length > 2 ? ',' : ''} and ${unansweredNumbers[unansweredNumbers.length - 1]}`;
+            Swal.fire({
+                title: 'Data Incomplete',
+                text: `You have ${unanswered} unanswered question${unanswered === 1 ? '' : 's'}: ${unanswered === 1 ? 'Number' : 'Numbers'} ${formattedNumbers}. Please answer ${unanswered === 1 ? 'it' : 'them'} before submitting your examination. End Session Anyway?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                confirmButtonColor: '#ef4444',
+                heightAuto: false, customClass: { popup: 'rounded-modal' }
+            }).then((result) => {
+                if (result.isConfirmed) processSubmission();
+            });
+        } else {
+            Swal.fire({
+                title: 'Confirm Submission?',
+                text: "Session cannot be reverted once locked.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                confirmButtonColor: '#17971d',
+                heightAuto: false, customClass: { popup: 'rounded-modal' }
+            }).then((result) => {
+                if (result.isConfirmed) processSubmission();
+            });
+        }
+    }
+
+    async function processSubmission() {
+        clearInterval(timerInterval);
+        Swal.fire({ title: 'Saving Module Progress...', allowOutsideClick: false, heightAuto: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
+
+        let score = 0;
+        userAnswers.forEach((ans, index) => {
+            if(ans === examQuestions[index].answer) score++;
+        });
+
+        try {
+            studentData.subject_scores[currentSubject] = score;
+            studentData.completed_subjects[currentSubject] = true;
+            
+            await update(dbRef(db, 'students/' + studentLrnGlobal), {
+                subject_scores: studentData.subject_scores,
+                completed_subjects: studentData.completed_subjects
+            });
+            
+            document.getElementById('timerDisplay').style.display = 'none';
+            document.getElementById('examScreen').classList.remove('active');
+            
+            checkIfAllCompleted();
+            
+        } catch (error) {
+            console.error(error);
+            Swal.fire({title: 'Encoding Failed', text: 'Error pushing data to remote server.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+        }
+    }
+
+    async function checkIfAllCompleted() {
+        let allDone = studentData.completed_subjects.math && studentData.completed_subjects.science && studentData.completed_subjects.english;
+        
+        if (allDone) {
+            Swal.fire({
+                title: 'All Subjects Completed',
+                text: 'Review the scores in the menu, then click Submit.',
+                icon: 'success',
+                timer: 1800,
+                showConfirmButton: false,
+                customClass: { popup: 'rounded-modal' }
+            });
+            document.getElementById('examTitleLevel').innerText = studentData.grade_level + " Modules";
+            document.getElementById('subjectMenuScreen').classList.add('active');
+            updateSubjectMenu();
+        } else {
+            // BUMALIK SA MENU
+            Swal.fire({
+                title: 'Module Completed', 
+                text: 'Please complete the remaining subjects.', 
+                icon: 'success', timer: 2000, showConfirmButton: false, customClass: { popup: 'rounded-modal' }
+            });
+            document.getElementById('examTitleLevel').innerText = studentData.grade_level + " Modules";
+            document.getElementById('subjectMenuScreen').classList.add('active');
+            updateSubjectMenu();
+        }
+    }
+
+    function getStudentName() {
+        return studentData.fullname || studentData.fullName || studentData.name || `${studentData.firstname || ''} ${studentData.lastname || ''}`.trim() || 'Student';
+    }
+
+    function getSubjectMax(subject) {
+        return subjectQuestions[subject] ? subjectQuestions[subject].length : 0;
+    }
+
+    window.finalSubmitExam = async function() {
+        const allDone = studentData.completed_subjects.math && studentData.completed_subjects.science && studentData.completed_subjects.english;
+        if (!allDone) {
+            Swal.fire({ title: 'Incomplete Exam', text: 'Please answer all three subjects first.', icon: 'warning', heightAuto: false, customClass: { popup: 'rounded-modal' } });
+            return;
+        }
+
+        const result = await Swal.fire({
+            title: 'Submit?',
+            text: 'This will lock the exam and show the final rating.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            confirmButtonColor: '#17971d',
+            heightAuto: false,
+            customClass: { popup: 'rounded-modal' }
+        });
+
+        if (!result.isConfirmed) return;
+
+        Swal.fire({ title: 'Processing Final Results...', text: 'Computing score and placement.', allowOutsideClick: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
+
+        try {
+            const mathScore = Number(studentData.subject_scores.math) || 0;
+            const scienceScore = Number(studentData.subject_scores.science) || 0;
+            const englishScore = Number(studentData.subject_scores.english) || 0;
+            const mathMax = getSubjectMax('math');
+            const scienceMax = getSubjectMax('science');
+            const englishMax = getSubjectMax('english');
+            let totalRaw = mathScore + scienceScore + englishScore;
+            let totalMax = mathMax + scienceMax + englishMax;
+            let examPercentage = totalMax > 0 ? (totalRaw / totalMax) * 100 : 0;
+            
+            let gwa = parseFloat(studentData.gwa) || 75; 
+            let aiPlacementRating = (gwa * 0.6) + (examPercentage * 0.4);
+            
+            const rulesSnap = await get(dbRef(db, 'placement_rules'));
+            const rules = rulesSnap.exists() ? rulesSnap.val() : {};
+            let recommendedTrack = "Regular Section";
+            
+            if (studentData.grade_level === "Grade 11") {
+                let g11Strands = [];
+                if(rules.STEM) g11Strands.push({ name: 'STEM', threshold: parseFloat(rules.STEM.threshold) || 0 });
+                if(rules.ICT) g11Strands.push({ name: 'ICT', threshold: parseFloat(rules.ICT.threshold) || 0 });
+                if(rules.EIM) g11Strands.push({ name: 'EIM', threshold: parseFloat(rules.EIM.threshold) || 0 });
+                if(rules.SMAW) g11Strands.push({ name: 'SMAW', threshold: parseFloat(rules.SMAW.threshold) || 0 });
+                
+                g11Strands.sort((a, b) => b.threshold - a.threshold); 
+                recommendedTrack = "GAS / Regular";
+                
+                for (let i = 0; i < g11Strands.length; i++) {
+                    if (aiPlacementRating >= g11Strands[i].threshold) {
+                        recommendedTrack = g11Strands[i].name;
+                        break;
+                    }
+                }
+            } else {
+                let steThreshold = rules.STE ? (parseFloat(rules.STE.threshold) || 0) : 85;
+                if (aiPlacementRating >= steThreshold) {
+                    recommendedTrack = "STE";
+                }
+            }
+            
+            await update(dbRef(db, 'students/' + studentLrnGlobal), {
+                exam_score_raw: totalRaw,
+                exam_score_percent: examPercentage,
+                ai_placement_rating: aiPlacementRating.toFixed(2),
+                exam_status: "Exam Completed",
+                track: recommendedTrack,
+                program: recommendedTrack
+            });
+            
+            Swal.close();
+            document.getElementById('timerDisplay').style.display = 'none';
+            document.getElementById('subjectMenuScreen').classList.remove('active');
+            document.getElementById('examTitleLevel').innerText = "Final Result";
+            document.getElementById('resultDescText').innerHTML = `
+                <span class="student-result-name">${getStudentName()}</span>
+                <span class="student-result-label">Exam Score Summary</span>
+                <div class="score-breakdown">
+                    <div class="score-row"><span>Math</span><span>${mathScore}/${mathMax}</span></div>
+                    <div class="score-row"><span>Science</span><span>${scienceScore}/${scienceMax}</span></div>
+                    <div class="score-row"><span>English</span><span>${englishScore}/${englishMax}</span></div>
+                    <div class="score-row total"><span>Total Exam Score</span><span>${totalRaw}/${totalMax} (${examPercentage.toFixed(2)}%)</span></div>
+                    <div class="score-row rating"><span>Overall Rating</span><span>${aiPlacementRating.toFixed(2)}%</span></div>
+                </div>
+            `;
+            document.getElementById('resultScreen').classList.add('active');
+        } catch (error) {
+            console.error(error);
+            Swal.fire({title: 'Final Submission Failed', text: 'Error saving final results to the database.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+        }
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLimit--;
+            let m = Math.floor(timeLimit / 60);
+            let s = timeLimit % 60;
+            document.getElementById('timeRemaining').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+            if(timeLimit <= 0) {
+                clearInterval(timerInterval);
+                Swal.fire({title: 'Time Elapsed', text: 'System will auto-terminate and encode your current entries.', icon: 'info', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+                processSubmission();
+            }
+        }, 1000);
+    }
+</script>
+</body>
+</html>

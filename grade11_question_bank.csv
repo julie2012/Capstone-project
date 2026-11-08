@@ -1,0 +1,46 @@
+level,subject,text,optionA,optionB,optionC,optionD,correct
+Grade 11,science,Which organelle is the primary site of cellular respiration?,Nucleus,Mitochondrion,Ribosome,Golgi apparatus,B
+Grade 11,science,What is the acceleration of a 2 kg object when a net force of 10 N acts on it?,2 m/s²,5 m/s²,10 m/s²,20 m/s²,B
+Grade 11,science,Which type of chemical bond forms when atoms share electron pairs?,Ionic bond,Covalent bond,Metallic bond,Hydrogen bond,B
+Grade 11,science,What is the pH of a neutral solution at 25 °C?,0,5,7,14,C
+Grade 11,science,Which process moves water across a selectively permeable membrane?,Diffusion,Osmosis,Active transport,Transpiration,B
+Grade 11,science,Which law states that energy cannot be created or destroyed?,Newton's first law,Law of conservation of energy,Ohm's law,Law of definite proportions,B
+Grade 11,science,What is the SI unit of electric current?,Volt,Ampere,Ohm,Watt,B
+Grade 11,science,Which blood vessels carry blood away from the heart?,Veins,Arteries,Capillaries,Venules,B
+Grade 11,science,What is the chemical symbol for potassium?,P,Po,K,Pt,C
+Grade 11,science,Which gas do plants absorb during photosynthesis?,Oxygen,Nitrogen,Carbon dioxide,Hydrogen,C
+Grade 11,science,What happens to the frequency of a wave when its period decreases?,It decreases,It increases,It becomes zero,It remains unchanged,B
+Grade 11,science,Which layer of Earth is composed mostly of liquid iron and nickel?,Crust,Mantle,Outer core,Inner core,C
+Grade 11,science,In a food chain what is the original energy source for most ecosystems?,The Sun,Soil minerals,Decomposers,The Moon,A
+Grade 11,science,What is the approximate value of gravitational acceleration near Earth's surface?,4.9 m/s²,9.8 m/s²,19.6 m/s²,98 m/s²,B
+Grade 11,science,Which particle has a negative electric charge?,Proton,Neutron,Electron,Positron,C
+Grade 11,mathematics,If f(x) = 2x² - 3x + 1 what is f(2)?,1,3,5,7,C
+Grade 11,mathematics,Solve the equation 3x - 7 = 11.,4,5,6,7,C
+Grade 11,mathematics,What is the slope of the line through (1 2) and (5 10)?,1,2,3,4,B
+Grade 11,mathematics,What is the exact value of sin 30°?,0,1/2,√2/2,1,B
+Grade 11,mathematics,A bag has 3 red and 5 blue marbles. What is the probability of drawing a red marble?,3/8,5/8,3/5,1/3,A
+Grade 11,mathematics,What is the value of log base 10 of 1000?,1,2,3,10,C
+Grade 11,mathematics,If the first term of an arithmetic sequence is 4 and the common difference is 3 what is the sixth term?,16,17,18,19,D
+Grade 11,mathematics,What are the solutions of x² - 5x + 6 = 0?,x = 1 and 6,x = 2 and 3,x = -2 and -3,x = 0 and 5,B
+Grade 11,mathematics,What is the slope of a line perpendicular to a line with slope 2?,2,-2,1/2,-1/2,D
+Grade 11,mathematics,What is the mean of 4 6 8 and 10?,6,7,8,9,B
+Grade 11,mathematics,What is the domain of f(x) = 1/(x - 4)?,All real numbers,x ≠ 0,x ≠ 4,x > 4,C
+Grade 11,mathematics,What is the value of cos 60°?,0,1/2,√2/2,1,B
+Grade 11,mathematics,How many different ways can 3 books be arranged on a shelf?,3,6,9,12,B
+Grade 11,mathematics,What is the vertex of y = (x - 2)² + 3?,(2 3),(-2 3),(3 2),(2 -3),A
+Grade 11,mathematics,What is the determinant of the matrix with rows [2 1] and [3 4]?,5,8,11,14,A
+Grade 11,english,Which sentence uses the correct subject verb agreement?,The list of topics are on the desk.,The list of topics is on the desk.,The topics in the list is on the desk.,The list are on the desk.,B
+Grade 11,english,In the sentence “The evidence was compelling” what does compelling mean?,Confusing,Persuasive,Incomplete,Ordinary,B
+Grade 11,english,Which word is closest in meaning to “mitigate”?,Worsen,Reduce,Ignore,Repeat,B
+Grade 11,english,Which sentence is punctuated correctly?,After the rain stopped we continued the game.,After the rain stopped; we continued the game.,After the rain stopped we; continued the game.,Incorrect comma placement,B
+Grade 11,english,What is the main purpose of a thesis statement in an argumentative essay?,To list every source used,To state the central claim,To provide a closing greeting,To describe the author's biography,B
+Grade 11,english,Which sentence is written in the active voice?,The report was prepared by Ana.,The proposal was approved yesterday.,The committee reviewed the proposal.,The room was cleaned by the staff.,C
+Grade 11,english,What is the function of a transition word such as “however”?,To show contrast,To introduce a definition,To list examples,To signal a sequence,A
+Grade 11,english,Which word is an antonym of “abundant”?,Plentiful,Scarce,Ample,Numerous,B
+Grade 11,english,Which sentence uses a semicolon correctly?,I studied; because the test was difficult.,The test was long; I finished it on time.,Although it rained; we continued walking.,She bought; apples and oranges.,B
+Grade 11,english,What does an inference require a reader to do?,Copy a sentence exactly,Combine clues with prior knowledge,Ignore details in the text,Read only the title,B
+Grade 11,english,Which sentence contains a correctly used apostrophe?,The students essay was clear.,The student's essay was clear.,The students' essay was clear. when one student wrote it.,The students's essay was clear.,B
+Grade 11,english,In literature what is the setting of a story?,The lesson the story teaches,The time and place of events,The main conflict,The narrator's opinion,B
+Grade 11,english,Which phrase is a metaphor?,The wind whispered through the trees.,Her smile was as bright as the sun.,Time is a thief.,The leaves moved like dancers.,C
+Grade 11,english,Which revision is the most concise?,Due to the fact that it rained we stayed inside.,Because it rained we stayed inside.,It was raining outside and for that reason we stayed indoors.,The reason we remained inside was because rain fell.,B
+Grade 11,english,Which sentence uses parallel structure?,She enjoys reading hiking and to swim.,She enjoys reading hiking and swimming.,She enjoys to read hiking and swimming.,She enjoys reading to hike and swimming.,B

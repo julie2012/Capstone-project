@@ -1,0 +1,2 @@
+http://localhost/exam/public/admin_new/admin_dash.html
+http://localhost/exam/public/index.hml

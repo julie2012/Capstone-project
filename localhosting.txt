@@ -1,0 +1,14 @@
+localhost/exam/public/index.html
+
+
+localhost/exam/public/exam.html
+
+
+localhost/exam/public/admin_login.html
+
+
+=======================================
+Admin Account
+User: admin
+Pass: admin123
+=======================================
