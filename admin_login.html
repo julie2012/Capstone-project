@@ -11,6 +11,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <style>
         :root {
@@ -253,12 +255,12 @@
 
         <form id="adminLoginForm">
             <div class="input-group">
-                <input type="text" id="adminUsername" placeholder="Administrator Username" required>
+                <input type="email" id="adminUsername" placeholder="Administrator Email" autocomplete="username" required>
                 <i class="fa-solid fa-user"></i>
             </div>
 
             <div class="input-group">
-                <input type="password" id="adminPassword" placeholder="Security Password" required>
+                <input type="password" id="adminPassword" placeholder="Password" autocomplete="current-password" required>
                 <i class="fa-solid fa-lock"></i>
             </div>
 
@@ -279,18 +281,31 @@
     </div>
 
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCL--aGTWJEcu7ErNZEI9RS4carF82dut8",
+            authDomain: "stajusta-entrance-exam.firebaseapp.com",
+            databaseURL: "https://stajusta-entrance-exam-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "stajusta-entrance-exam",
+            storageBucket: "stajusta-entrance-exam.firebasestorage.app",
+            messagingSenderId: "596788444273",
+            appId: "1:596788444273:web:57d8ff2e665d9bf6bbafd0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const adminUid = "XXtbkWz1UxdGcFekK4Q8TDKVczP2";
+
         document.addEventListener('DOMContentLoaded', () => {
-            const savedUsername = localStorage.getItem('rememberedAdminUser');
-            if (savedUsername) {
-                document.getElementById('adminUsername').value = savedUsername;
+            const savedEmail = localStorage.getItem('rememberedAdminEmail');
+            if (savedEmail) {
+                document.getElementById('adminUsername').value = savedEmail;
                 document.getElementById('rememberMe').checked = true;
             }
         });
 
-        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const username = document.getElementById('adminUsername').value;
+            const email = document.getElementById('adminUsername').value.trim();
             const password = document.getElementById('adminPassword').value;
             const rememberMe = document.getElementById('rememberMe').checked;
             const loginBtn = document.getElementById('loginBtn');
@@ -299,37 +314,29 @@
             loginBtn.style.opacity = '0.8';
             loginBtn.style.pointerEvents = 'none';
 
-            setTimeout(() => {
-                if (username === 'admin' && password === 'admin123') {
-                    if (rememberMe) {
-                        localStorage.setItem('rememberedAdminUser', username);
-                    } else {
-                        localStorage.removeItem('rememberedAdminUser');
-                    }
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Access Granted',
-                        text: 'Welcome back, Admin!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                         window.location.href = "admin_new/admin_dash.html"; 
-                    });
-
-                } else {
-                    loginBtn.innerHTML = 'Authenticate <i class="fa-solid fa-arrow-right-to-bracket"></i>';
-                    loginBtn.style.opacity = '1';
-                    loginBtn.style.pointerEvents = 'auto';
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Access Denied',
-                        text: 'Invalid username or password.',
-                        confirmButtonColor: '#ef4444'
-                    });
+            try {
+                // Save the admin session on this browser origin before navigating
+                // to the dashboard, so its auth-state check can restore the user.
+                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                const credential = await auth.signInWithEmailAndPassword(email, password);
+                if (credential.user.uid !== adminUid) {
+                    await auth.signOut();
+                    throw new Error('This account is not authorized as the system administrator.');
                 }
-            }, 800); // 800ms delay para sa smooth animation
+                if (rememberMe) localStorage.setItem('rememberedAdminEmail', email);
+                else localStorage.removeItem('rememberedAdminEmail');
+                window.location.href = "admin_new/admin_dash.html";
+            } catch (error) {
+                loginBtn.innerHTML = 'Authenticate <i class="fa-solid fa-arrow-right-to-bracket"></i>';
+                loginBtn.style.opacity = '1';
+                loginBtn.style.pointerEvents = 'auto';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Sign-in failed',
+                    text: error.message.includes('not authorized') ? error.message : 'Check your email and password, then try again.',
+                    confirmButtonColor: '#ef4444'
+                });
+            }
         });
     </script>
 </body>
