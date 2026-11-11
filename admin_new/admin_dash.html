@@ -511,7 +511,7 @@
                     <div class="v-title">List of Students</div>
                     
                     <div style="display: flex; gap: 12px; align-items: center;">
-                        <button class="btn-print" id="print-verification-list" onclick="printVerificationList()" hidden><i class="fa-solid fa-print"></i> Print List</button>
+                        <button class="btn-print" id="verification-print-button" onclick="printVerificationList()" hidden><i class="fa-solid fa-print"></i> Print List</button>
                         <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 16px; display: flex; align-items: center; gap: 10px; width: 280px;">
                             <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 13px;"></i>
                             <input type="text" id="verification-search-input" placeholder="Search student name or LRN..." style="border: none; outline: none; background: transparent; width: 100%; font-size: 13px; font-weight: 600; color: var(--text-dark);">
@@ -714,21 +714,29 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyAlIYMnR-XkQgpffpBYHca0NugpZicfatA",
-            authDomain: "entrance-exam-a5625.firebaseapp.com",
-            databaseURL: "https://entrance-exam-a5625-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "entrance-exam-a5625",
-            storageBucket: "entrance-exam-a5625.firebasestorage.app",
-            messagingSenderId: "714388520551",
-            appId: "1:714388520551:web:3332dd2cac709880f59ec2"
+            apiKey: "AIzaSyCL--aGTWJEcu7ErNZEI9RS4carF82dut8",
+            authDomain: "stajusta-entrance-exam.firebaseapp.com",
+            databaseURL: "https://stajusta-entrance-exam-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "stajusta-entrance-exam",
+            storageBucket: "stajusta-entrance-exam.firebasestorage.app",
+            messagingSenderId: "596788444273",
+            appId: "1:596788444273:web:57d8ff2e665d9bf6bbafd0"
         };
 
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const db = firebase.database();
+        const adminUid = "XXtbkWz1UxdGcFekK4Q8TDKVczP2";
+        auth.onAuthStateChanged((user) => {
+            if (!user || user.uid !== adminUid) {
+                auth.signOut().finally(() => window.location.replace("../admin_login.html"));
+            }
+        });
 
         let masterUsersList = [];
         let allRecentList = [];
@@ -1096,8 +1104,6 @@
             currentActiveSection = filterSection;
             const tableBody = document.getElementById('table-body');
             if(!tableBody) return;
-            const printListButton = document.getElementById('print-verification-list');
-            if (printListButton) printListButton.hidden = !(['STEM', 'ICT', 'EIM', 'SMAW'].includes(filterSection));
             
             tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 30px; color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 18px; color: #17971d; margin-bottom: 6px;"></i><p style="font-size:11px;">Syncing calculations matrix parameters real-time...</p></td></tr>`;
 
@@ -1157,6 +1163,9 @@
             const tableHead = document.getElementById('verification-table-head');
             const searchInput = document.getElementById('verification-search-input');
             const searchQ = searchInput ? searchInput.value.toLowerCase() : '';
+            const printButton = document.getElementById('verification-print-button');
+            const printableSections = ['Regular Section', 'STE', 'Section A', 'Section B', 'Section C', 'G11 Pool', 'STEM', 'ICT', 'EIM', 'SMAW'];
+            if (printButton) printButton.hidden = !printableSections.includes(currentActiveSection);
             
             const filtered = masterUsersList.filter(u => 
                 u.fullName.toLowerCase().includes(searchQ) || u.lrn.toLowerCase().includes(searchQ)
@@ -1191,51 +1200,118 @@
         };
 
         window.printVerificationList = function() {
-            const tableHead = document.getElementById('verification-table-head');
-            const tableBody = document.getElementById('table-body');
-            const generatedAt = new Date().toLocaleString();
-            const title = `${currentActiveSection} - List of Students`;
-            const printColumns = Array.from(tableHead ? tableHead.querySelectorAll('th') : []).map((th, index) => ({ label: th.innerText.trim(), index })).filter(col => ['Student Name', 'LRN No.'].includes(col.label));
-            const printRows = Array.from(tableBody ? tableBody.querySelectorAll('tr') : []).map(row => {
-                const cells = Array.from(row.children);
-                if (cells.length === 1) return `<tr><td colspan="${printColumns.length}" style="text-align:center;">${cells[0].innerText}</td></tr>`;
-                return `<tr>${printColumns.map(col => `<td>${cells[col.index] ? cells[col.index].innerText : ''}</td>`).join('')}</tr>`;
-            }).join('');
+            const searchInput = document.getElementById('verification-search-input');
+            const searchQ = searchInput ? searchInput.value.trim().toLowerCase() : '';
+            const printUsers = masterUsersList.filter(user =>
+                user.fullName.toLowerCase().includes(searchQ) || user.lrn.toLowerCase().includes(searchQ)
+            );
+            const sectionTitles = {
+                'Regular Section': 'Grade 7 Regular Pool',
+                STE: 'Grade 7 - STE',
+                'Section A': 'Grade 7 - Section A',
+                'Section B': 'Grade 7 - Section B',
+                'Section C': 'Grade 7 - Section C',
+                'G11 Pool': 'Grade 11 Pool',
+                STEM: 'Grade 11 - STEM',
+                ICT: 'Grade 11 - ICT',
+                EIM: 'Grade 11 - EIM',
+                SMAW: 'Grade 11 - SMAW'
+            };
+            const title = sectionTitles[currentActiveSection] || 'Student Pool';
+            const schoolLogoUrl = new URL('../img/school-logo.jpg', window.location.href).href;
+            const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[char]);
+            const printRows = printUsers.map((user, index) => `
+                <tr><td class="number-cell">${index + 1}</td><td>${escapeHtml(user.fullName)}</td><td class="lrn-cell">${escapeHtml(user.lrn)}</td></tr>
+            `).join('');
 
-            const printWindow = window.open('', '_blank');
-            if (!printWindow) {
-                Swal.fire('Print Blocked', 'Please allow pop-ups to print the student list.', 'warning');
-                return;
-            }
+            const printFrame = document.createElement('iframe');
+            printFrame.setAttribute('aria-hidden', 'true');
+            printFrame.tabIndex = -1;
+            printFrame.style.position = 'fixed';
+            printFrame.style.width = '0';
+            printFrame.style.height = '0';
+            printFrame.style.border = '0';
+            document.body.appendChild(printFrame);
+            const printWindow = printFrame.contentWindow;
+            const printDocument = printWindow.document;
+            const cleanupPrintFrame = () => {
+                printFrame.remove();
+            };
+            printWindow.addEventListener('afterprint', cleanupPrintFrame, { once: true });
 
-            printWindow.document.write(`
+            printDocument.open();
+            printDocument.write(`
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <title>${title}</title>
                     <style>
-                        body { font-family: Arial, sans-serif; color: #0f172a; padding: 24px; }
-                        h1 { font-size: 20px; margin: 0 0 4px; text-transform: uppercase; }
-                        p { margin: 0 0 18px; color: #475569; font-size: 12px; }
-                        table { width: 100%; border-collapse: collapse; }
-                        th, td { border: 1px solid #cbd5e1; padding: 10px; font-size: 12px; text-align: left; }
-                        th { background: #f1f5f9; text-transform: uppercase; }
-                        .action-btn-group, .action-btn, i { display: none; }
+                        @page { margin: 0; }
+                        body { font-family: Arial, sans-serif; color: #111827; padding: 24px; }
+                        .school-header { text-align: center; }
+                        .school-logo { display: block; width: 58px; height: 58px; object-fit: contain; margin: 0 auto 7px; }
+                        .school-department, .school-address { color: #555; font-size: 11px; margin: 3px 0; }
+                        .school-name { color: #102449; font-size: 16px; font-weight: 800; letter-spacing: .15px; line-height: 1.2; margin: 4px 0; text-transform: uppercase; }
+                        .section-rule { border-top: 3px double #555; margin: 12px 0; }
+                        .report-heading { text-align: center; }
+                        .report-title { font-size: 13px; font-weight: 700; margin: 0 0 4px; text-transform: uppercase; }
+                        .report-subtitle { color: #555; font-size: 11px; margin: 0; }
+                        table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 12px; }
+                        th, td { border-bottom: 1px solid #d0d0d0; padding: 7px 8px; font-size: 12px; text-align: left; vertical-align: middle; overflow-wrap: anywhere; }
+                        thead th { border-bottom: 1px solid #999; font-size: 11px; font-weight: 700; }
+                        th:first-child, td:first-child { width: 34px; }
+                        th:nth-child(2), td:nth-child(2) { width: 52%; }
+                        th:last-child, td:last-child { width: 43%; }
+                        .number-cell { color: #444; }
+                        .lrn-cell { font-variant-numeric: tabular-nums; white-space: nowrap; }
+                        thead { display: table-header-group; }
+                        @media print { body { padding: 16mm; } tr { break-inside: avoid; } }
                     </style>
                 </head>
                 <body>
-                    <h1>${title}</h1>
-                    <p>Generated ${generatedAt}</p>
+                    <header class="school-header">
+                        <img class="school-logo" src="${escapeHtml(schoolLogoUrl)}" alt="Sta. Justa National High School seal">
+                        <p class="school-department">Republic of the Philippines | Department of Education</p>
+                        <h1 class="school-name">Sta. Justa National High School</h1>
+                        <p class="school-address">Sta. Justa, Tibiao, Antique</p>
+                    </header>
+                    <div class="section-rule"></div>
+                    <div class="report-heading">
+                        <h2 class="report-title">List of Students</h2>
+                        <p class="report-subtitle">${escapeHtml(title)} | S.Y. 2026-2027</p>
+                    </div>
                     <table>
-                        <thead><tr>${printColumns.map(col => `<th>${col.label}</th>`).join('')}</tr></thead>
-                        <tbody>${printRows}</tbody>
+                        <thead><tr><th>No.</th><th>Student name</th><th>LRN</th></tr></thead>
+                        <tbody>${printRows || '<tr><td colspan="3" style="text-align:center;">No matching students found.</td></tr>'}</tbody>
                     </table>
                 </body>
                 </html>
             `);
-            printWindow.document.close();
+            printDocument.close();
             printWindow.focus();
-            printWindow.print();
+            let printStarted = false;
+            const startPrint = () => {
+                if (printStarted) return;
+                printStarted = true;
+                window.setTimeout(() => {
+                try {
+                    printWindow.print();
+                } catch (error) {
+                    cleanupPrintFrame();
+                    console.error('Unable to open the print dialog.', error);
+                }
+                }, 50);
+            };
+            const logo = printDocument.querySelector('.school-logo');
+            if (logo && !logo.complete) {
+                logo.addEventListener('load', startPrint, { once: true });
+                logo.addEventListener('error', startPrint, { once: true });
+                window.setTimeout(startPrint, 1500);
+            } else {
+                startPrint();
+            }
         };
 
         window.listenToQuestionBank = function() {
@@ -2117,7 +2193,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.logAction('SYSTEM', 'Admin logged out.');
-                        window.location.href = "../index.html"; 
+                        auth.signOut().finally(() => window.location.href = "../admin_login.html");
                     }
                 });
             });
