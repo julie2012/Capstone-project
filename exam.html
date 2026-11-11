@@ -125,12 +125,12 @@
             box-shadow: 0 10px 25px var(--secondary-glow) !important; position: relative; overflow: hidden;
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform:skewX(-20deg); transition: 0.5s; }
+        .btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform: skewX(-20deg); transition: 0.5s; }
         .btn:hover::after { left: 150%; }
         .btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 35px var(--secondary-glow) !important; }
         .btn:active { transform: translateY(2px) scale(0.98); }
 
-        .btn.btn-success { background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; box-shadow: 0 10px 25px var(--primary-glow) !important; color: #ffffff !important; border: none; }
+        .btn.btn-success { background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; box-shadow: 0 10px 25px var(--primary-glow) !important; color: #ffffff !important; border: none !important; }
         .btn.btn-success:hover { box-shadow: 0 15px 35px var(--primary-glow) !important; }
 
         .btn.btn-outline { background: #fff !important; border: 2px solid #cbd5e1 !important; color: var(--text-muted) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important; }
@@ -198,15 +198,15 @@
         #prevBtn { width: 35%; } #nextBtn, #submitBtn { width: 65%; }
 
         .progress-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        .progress-text { font-size: 12px; font-weight: 800; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; background: var(--secondary-glow); padding: 6px 14px; border-radius: 999px; }
+        .progress-text { font-size: 12px; font-weight: 800; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; background: var(--secondary-glow); padding: 6px 14px; border-radius: 8px; }
         
         .question-text { font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 20px; line-height: 1.4; letter-spacing: -0.2px; }
         
         .options-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
-        .option-label { display: flex; align-items: center; gap: 14px; padding: 14px 20px; background: rgba(255, 255, 255, 0.6); border: 2px solid var(--line); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; }
+        .option-label { display: flex; align-items: center; gap: 14px; padding: 14px 20px; background: rgba(255, 255, 255, 0.6); border: 2px solid var(--line); border-radius: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600; color: var(--text-muted); font-size: 14px; position: relative; overflow: hidden; }
         .option-label:hover { border-color: #93c5fd; background: #fff; transform: scale(1.01); box-shadow: 0 5px 15px rgba(34, 77, 180, 0.08); }
         .option-label input[type="radio"] { display: none; }
-        .custom-radio { width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; background: #fff; }
+        .custom-radio { width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; background: #fff; flex-shrink: 0; }
         .custom-radio::after { content: ''; width: 10px; height: 10px; background: var(--secondary); border-radius: 50%; transform: scale(0); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .option-label input[type="radio"]:checked + .custom-radio { border-color: var(--secondary); box-shadow: 0 0 0 3px var(--secondary-glow); }
         .option-label input[type="radio"]:checked + .custom-radio::after { transform: scale(1); }
@@ -217,7 +217,7 @@
         @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         
         .result-title { text-align: center; font-size: 30px; font-weight: 900; margin-bottom: 12px; letter-spacing: -1px; color: var(--text-dark); }
-        .result-desc { text-align: center; color: var(--text-muted); line-height: 1.6; font-size: 14px; font-weight: 500; background: rgba(248, 250, 252, 0.88); padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .result-desc { text-align: center; color: var(--text-muted); line-height: 1.6; font-size: 14px; font-weight: 500; background: rgba(248, 250, 252, 0.88); padding: 20px; border-radius: 16px; border: 1px solid #dbeafe; }
         .student-result-name {
             display: block;
             color: var(--text-dark);
@@ -307,30 +307,46 @@
     <div id="resultScreen">
         <div class="result-icon"><i class="fa-solid fa-shield-check"></i></div>
         <h2 class="result-title">Final Results</h2>
-        <div class="result-desc" id="resultDescText">Your responses have been successfully encoded to the system. The AI Placement Engine will formulate your results along with your GWA. You will receive the final placement after the system processes the data.</div>
+        <div class="result-desc" id="resultDescText">Your responses have been successfully encoded to the system. The AI Placement Engine will formulate your results along with your GWA. You will receive an automated SMS regarding your designated track.</div>
         <br>
         <button class="btn btn-outline" style="width: 100%;" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Return to Main Menu</button>
     </div>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref as dbRef, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    const EXAM_API_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+        ? 'https://capstoneproject-ten-rho.vercel.app/api/exam'
+        : '/api/exam';
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAlIYMnR-XkQgpffpBYHca0NugpZicfatA",
-        authDomain: "entrance-exam-a5625.firebaseapp.com",
-        databaseURL: "https://entrance-exam-a5625-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "entrance-exam-a5625",
-        storageBucket: "entrance-exam-a5625.firebasestorage.app",
-        messagingSenderId: "714388520551",
-        appId: "1:714388520551:web:3332dd2cac709880f59ec2"
-    };
+    async function callExamApi(payload) {
+        const response = await fetch(EXAM_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        let result;
+        try {
+            result = await response.json();
+        } catch (_) {
+            throw Object.assign(new Error('The exam service returned an unreadable response.'), { code: 'INVALID_SERVER_RESPONSE' });
+        }
+        if (!response.ok || !result.ok) {
+            throw Object.assign(new Error(result.error || 'The exam service could not complete the request.'), {
+                code: result.code || 'EXAM_API_ERROR',
+                details: result.details || {}
+            });
+        }
+        return result;
+    }
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    function escapeHtml(value) {
+        const element = document.createElement('span');
+        element.textContent = String(value ?? '');
+        return element.innerHTML;
+    }
 
-    let examQuestions = [];
+    // Global System States
+    let examQuestions = []; 
     let subjectQuestions = { math: [], science: [], english: [] };
     let currentSubject = "";
     
@@ -338,6 +354,7 @@
     let userAnswers = [];
     let studentData = null;
     let studentLrnGlobal = "";
+    let studentSessionId = "";
     
     let timeLimit = 0;
     let timerInterval;
@@ -351,159 +368,63 @@
         Swal.fire({ title: 'Authenticating...', allowOutsideClick: false, heightAuto: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
 
         try {
-            const studentRef = dbRef(db, 'students/' + lrn);
-            const snapshot = await get(studentRef);
+            const result = await callExamApi({ action: 'start', lrn });
+            studentData = result.student;
+            studentLrnGlobal = lrn;
+            studentSessionId = result.sessionId;
+            subjectQuestions = result.questions;
 
-            if(snapshot.exists()) {
-                studentData = snapshot.val();
-                studentLrnGlobal = lrn;
-
-                if (!studentData.completed_subjects) {
-                    studentData.completed_subjects = { math: false, science: false, english: false };
-                }
-                if (!studentData.subject_scores) {
-                    studentData.subject_scores = { math: 0, science: 0, english: 0 };
-                }
-
-                if(studentData.exam_score_raw !== undefined || studentData.exam_status === "Exam Completed") {
-                    Swal.fire({
-                        title: 'Exam Completed', 
-                        text: 'You have already taken and submitted the entrance exam. Retaking is not allowed.', 
-                        icon: 'info', 
-                        heightAuto: false, customClass: { popup: 'rounded-modal' }
-                    });
-                    return;
-                }
-
-                if(studentData.exam_status === "Qualified for Exam" || studentData.exam_status === "Taking Exam") {
-                    let targetLevel = studentData.grade_level;
-                    let program = studentData.program || studentData.track || "Regular";
-
-                    if(targetLevel === "Grade 7" && program === "STE") {
-                        targetLevel = "Grade 7 STE";
-                    }
-
-                    document.getElementById('examTitleLevel').innerText = targetLevel + " Modules";
-
-                    Swal.fire({ title: 'Scanning Server Slots...', allowOutsideClick: false, heightAuto: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
-                    
-                    const rulesSnap = await get(dbRef(db, 'placement_rules/' + program));
-                    let maxCapacity = 40;
-                    if (rulesSnap.exists()) {
-                        maxCapacity = parseInt(rulesSnap.val().capacity) || 40;
-                    }
-
-                    const allStudentsSnap = await get(dbRef(db, 'students'));
-                    let activeExaminees = 0;
-                    
-                    if (allStudentsSnap.exists()) {
-                        const allStuds = allStudentsSnap.val();
-                        Object.values(allStuds).forEach(s => {
-                            if ((s.program === program || s.track === program) && s.exam_status === "Taking Exam") {
-                                activeExaminees++;
-                            }
-                        });
-                    }
-
-                    if (studentData.exam_status !== "Taking Exam" && activeExaminees >= maxCapacity) {
-                        let countdown = 15;
-                        let queueTimerInterval;
-
-                        Swal.fire({
-                            title: 'Exam Slots Full',
-                            html: `
-                                <div style="font-size: 42px; font-weight: 900; color: #ef4444; margin: 10px 0; letter-spacing: -1px;">
-                                    ${activeExaminees} <span style="font-size: 20px; color: #94a3b8;">/ ${maxCapacity}</span>
-                                </div>
-                                <div style="font-size: 12px; font-weight: 800; color: #475569; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    Occupied Slots for ${program}
-                                </div>
-                                <div style="background: #eff6ff; padding: 16px; border-radius: 12px; border: 1px solid #bfdbfe;">
-                                    <b style="color: #1d4ed8; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                        <i class="fa-solid fa-arrows-rotate fa-spin"></i> Auto-checking in <span id="queueCountdown" style="font-size: 18px;">${countdown}</span>s
-                                    </b>
-                                    <div style="font-size: 11px; color: #3b82f6; margin-top: 6px; font-weight: 600;">Please do not close this window. You are in queue.</div>
-                                </div>
-                            `,
-                            icon: 'warning', heightAuto: false, showConfirmButton: false, allowOutsideClick: false, customClass: { popup: 'rounded-modal' },
-                            didOpen: () => {
-                                queueTimerInterval = setInterval(() => {
-                                    countdown--;
-                                    const timerEl = document.getElementById('queueCountdown');
-                                    if(timerEl) timerEl.innerText = countdown;
-
-                                    if(countdown <= 0) {
-                                        clearInterval(queueTimerInterval);
-                                        Swal.close();
-                                        startExam(); 
-                                    }
-                                }, 1000);
-                            },
-                            willClose: () => { clearInterval(queueTimerInterval); }
-                        });
-                        return;
-                    }
-
-                    if (studentData.exam_status !== "Taking Exam") {
-                        await update(dbRef(db, 'students/' + lrn), { exam_status: "Taking Exam" });
-                    }
-
-                    Swal.fire({ title: 'Downloading Exam Matrix...', allowOutsideClick: false, heightAuto: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
-                    
-                    const qRef = dbRef(db, 'questions/' + targetLevel);
-                    const qSnap = await get(qRef);
-
-                    if (!qSnap.exists()) {
-                        Swal.fire({title: 'System Error', text: 'No questions are configured for your grade level yet. Please contact the administrator.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
-                        return;
-                    }
-
-                    const subjectsData = qSnap.val() || {};
-                    let hasQuestions = false;
-                    
-                    subjectQuestions = { math: [], science: [], english: [] };
-                    Object.keys(subjectsData).forEach(subj => {
-                        let s = subj.toLowerCase();
-                        if (['math', 'science', 'english'].includes(s)) {
-                            Object.keys(subjectsData[subj]).forEach(qId => {
-                                let q = subjectsData[subj][qId];
-                                subjectQuestions[s].push({
-                                    q: q.text,
-                                    options: [`A) ${q.options.A}`, `B) ${q.options.B}`, `C) ${q.options.C}`, `D) ${q.options.D}`],
-                                    answer: q.correct === 'A' ? 0 : q.correct === 'B' ? 1 : q.correct === 'C' ? 2 : 3
-                                });
-                                hasQuestions = true;
-                            });
-                            subjectQuestions[s].sort(() => Math.random() - 0.5);
-                        }
-                    });
-
-                    if (!hasQuestions) {
-                        Swal.fire({title: 'System Error', text: 'No recognized subject questions found for your grade level.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
-                        return;
-                    }
-
-                    Swal.close();
-                    document.getElementById('loginScreen').classList.remove('active');
-                    document.getElementById('subjectMenuScreen').classList.add('active');
-                    window.updateSubjectMenu();
-
-                } else {
-                    let currentStat = studentData.exam_status || "Pending Verification";
-                    Swal.fire({
-                        title: 'Clearance Required',
-                        html: `Your current status is: <b>${currentStat}</b>.<br><br><b style="color:var(--primary);">Please wait for an SMS text</b> indicating your clearance before executing the exam.`,
-                        icon: 'warning', heightAuto: false, customClass: { popup: 'rounded-modal' }
-                    });
-                }
-            } else {
-                Swal.fire({title: 'Invalid Credentials', text: 'Record not found. Ensure you are registered and cleared by the admin server.', icon: 'warning', heightAuto: false, customClass: { popup: 'rounded-modal' }});
-            }
+            const targetLevel = studentData.grade_level === 'Grade 7' && result.targetLevel === 'Grade 7 STE'
+                ? 'Grade 7 STE'
+                : studentData.grade_level;
+            document.getElementById('examTitleLevel').innerText = `${targetLevel} Modules`;
+            Swal.close();
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('subjectMenuScreen').classList.add('active');
+            window.updateSubjectMenu();
         } catch(error) {
-            Swal.fire({title: 'Connection Lost', text: 'Failed to establish link with the database.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+            console.error('Exam service request failed:', { code: error?.code || 'unknown', message: error?.message || String(error) });
+            if (error.code === 'EXAM_COMPLETED') {
+                Swal.fire({ title: 'Exam Completed', text: 'You have already taken and submitted the entrance exam. Retaking is not allowed.', icon: 'info', heightAuto: false, customClass: { popup: 'rounded-modal' } });
+            } else if (error.code === 'NOT_APPROVED') {
+                const currentStatus = error.details?.examStatus || 'Pending Verification';
+                Swal.fire({ title: 'Clearance Required', html: `Your current status is: <b>${currentStatus}</b>.<br><br><b style="color:var(--primary);">Please wait for an SMS text</b> indicating your clearance before taking the exam.`, icon: 'warning', heightAuto: false, customClass: { popup: 'rounded-modal' } });
+            } else if (error.code === 'STUDENT_NOT_FOUND') {
+                Swal.fire({ title: 'Invalid Credentials', text: 'Record not found. Ensure you are registered and cleared by the admin server.', icon: 'warning', heightAuto: false, customClass: { popup: 'rounded-modal' } });
+            } else if (error.code === 'QUEUE_FULL') {
+                let countdown = 15;
+                let queueTimerInterval;
+                const active = Number(error.details?.activeExaminees) || 0;
+                const capacity = Number(error.details?.capacity) || 40;
+                Swal.fire({
+                    title: 'Exam Slots Full',
+                    html: `<div style="font-size:42px;font-weight:900;color:#ef4444;margin:10px 0;">${active} <span style="font-size:20px;color:#94a3b8;">/ ${capacity}</span></div><div style="font-size:12px;font-weight:800;color:#475569;margin-bottom:24px;text-transform:uppercase;">Occupied exam slots</div><div style="background:#eff6ff;padding:16px;border-radius:12px;border:1px solid #bfdbfe;"><b style="color:#1d4ed8;font-size:14px;">Auto-checking in <span id="queueCountdown">${countdown}</span>s</b><div style="font-size:11px;color:#3b82f6;margin-top:6px;">Please keep this page open.</div></div>`,
+                    icon: 'warning', heightAuto: false, showConfirmButton: false, allowOutsideClick: false, customClass: { popup: 'rounded-modal' },
+                    didOpen: () => {
+                        queueTimerInterval = setInterval(() => {
+                            countdown--;
+                            const timer = document.getElementById('queueCountdown');
+                            if (timer) timer.innerText = countdown;
+                            if (countdown <= 0) {
+                                clearInterval(queueTimerInterval);
+                                Swal.close();
+                                window.startExam();
+                            }
+                        }, 1000);
+                    },
+                    willClose: () => clearInterval(queueTimerInterval)
+                });
+            } else if (error.code === 'QUESTIONS_MISSING') {
+                Swal.fire({ title: 'System Error', text: error.message, icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' } });
+            } else if (error.code === 'SERVER_CONFIGURATION') {
+                Swal.fire({ title: 'Exam Service Setup Required', text: 'The secure exam service has not been configured yet. Please contact the administrator.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' } });
+            } else {
+                Swal.fire({ title: 'Connection Lost', text: error.message || 'Unable to reach the secure exam service.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' } });
+            }
         }
     }
 
+    // UPDATE SUBJECT MENU (UNIVERSAL)
     window.updateSubjectMenu = function() {
         ['math', 'science', 'english'].forEach(sub => {
             let btn = document.getElementById('btn-sub-' + sub);
@@ -523,13 +444,26 @@
         document.getElementById('finalSubmitPanel').classList.toggle('show', allDone);
     }
 
-    window.startSubject = function(sub) {
+    // START SPECIFIC SUBJECT
+    window.startSubject = async function(sub) {
         if (subjectQuestions[sub].length === 0) {
-            Swal.fire('No Questions', `No questions configured for ${sub.toUpperCase()} in the database. Auto-completing module.`, 'info');
-            studentData.completed_subjects[sub] = true;
-            studentData.subject_scores[sub] = 0;
-            updateSubjectMenu();
-            checkIfAllCompleted();
+            await Swal.fire('No Questions', `No questions configured for ${sub.toUpperCase()} in the database. Auto-completing module.`, 'info');
+            try {
+                const result = await callExamApi({
+                    action: 'submitSubject',
+                    lrn: studentLrnGlobal,
+                    sessionId: studentSessionId,
+                    subject: sub,
+                    answers: []
+                });
+                studentData.completed_subjects = result.progress.completed_subjects;
+                studentData.subject_scores = result.progress.subject_scores;
+                updateSubjectMenu();
+                checkIfAllCompleted();
+            } catch (error) {
+                console.error('Empty subject submission failed:', error);
+                Swal.fire({ title: 'Unable to Continue', text: error.message || 'Could not save this module.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' } });
+            }
             return;
         }
         
@@ -605,7 +539,7 @@
                 : `${unansweredNumbers.slice(0, -1).join(', ')}${unansweredNumbers.length > 2 ? ',' : ''} and ${unansweredNumbers[unansweredNumbers.length - 1]}`;
             Swal.fire({
                 title: 'Data Incomplete',
-                text: `You have ${unanswered} unanswered question${unanswered === 1 ? '' : 's'}: ${unanswered === 1 ? 'Number' : 'Numbers'} ${formattedNumbers}. Please answer ${unanswered === 1 ? 'it' : 'them'} before submitting.`,
+                text: `You have ${unanswered} unanswered question${unanswered === 1 ? '' : 's'}: ${unanswered === 1 ? 'Number' : 'Numbers'} ${formattedNumbers}. Please answer ${unanswered === 1 ? 'it' : 'them'} before submitting your examination. End Session Anyway?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Submit',
@@ -633,19 +567,16 @@
         clearInterval(timerInterval);
         Swal.fire({ title: 'Saving Module Progress...', allowOutsideClick: false, heightAuto: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
 
-        let score = 0;
-        userAnswers.forEach((ans, index) => {
-            if(ans === examQuestions[index].answer) score++;
-        });
-
         try {
-            studentData.subject_scores[currentSubject] = score;
-            studentData.completed_subjects[currentSubject] = true;
-            
-            await update(dbRef(db, 'students/' + studentLrnGlobal), {
-                subject_scores: studentData.subject_scores,
-                completed_subjects: studentData.completed_subjects
+            const result = await callExamApi({
+                action: 'submitSubject',
+                lrn: studentLrnGlobal,
+                sessionId: studentSessionId,
+                subject: currentSubject,
+                answers: userAnswers
             });
+            studentData.subject_scores = result.progress.subject_scores;
+            studentData.completed_subjects = result.progress.completed_subjects;
             
             document.getElementById('timerDisplay').style.display = 'none';
             document.getElementById('examScreen').classList.remove('active');
@@ -653,8 +584,8 @@
             checkIfAllCompleted();
             
         } catch (error) {
-            console.error(error);
-            Swal.fire({title: 'Encoding Failed', text: 'Error pushing data to remote server.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+            console.error('Exam subject submission failed:', error);
+            Swal.fire({title: 'Encoding Failed', text: error.message || 'Could not save this module.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
         }
     }
 
@@ -674,6 +605,7 @@
             document.getElementById('subjectMenuScreen').classList.add('active');
             updateSubjectMenu();
         } else {
+            // BUMALIK SA MENU
             Swal.fire({
                 title: 'Module Completed', 
                 text: 'Please complete the remaining subjects.', 
@@ -683,14 +615,6 @@
             document.getElementById('subjectMenuScreen').classList.add('active');
             updateSubjectMenu();
         }
-    }
-
-    function getStudentName() {
-        return studentData.fullname || studentData.fullName || studentData.name || `${studentData.firstname || ''} ${studentData.lastname || ''}`.trim() || 'Student';
-    }
-
-    function getSubjectMax(subject) {
-        return subjectQuestions[subject] ? subjectQuestions[subject].length : 0;
     }
 
     window.finalSubmitExam = async function() {
@@ -716,74 +640,33 @@
         Swal.fire({ title: 'Processing Final Results...', text: 'Computing score and placement.', allowOutsideClick: false, customClass: { popup: 'rounded-modal' }, didOpen: () => { Swal.showLoading() } });
 
         try {
-            const mathScore = Number(studentData.subject_scores.math) || 0;
-            const scienceScore = Number(studentData.subject_scores.science) || 0;
-            const englishScore = Number(studentData.subject_scores.english) || 0;
-            const mathMax = getSubjectMax('math');
-            const scienceMax = getSubjectMax('science');
-            const englishMax = getSubjectMax('english');
-            let totalRaw = mathScore + scienceScore + englishScore;
-            let totalMax = mathMax + scienceMax + englishMax;
-            let examPercentage = totalMax > 0 ? (totalRaw / totalMax) * 100 : 0;
-            
-            let gwa = parseFloat(studentData.gwa) || 75;
-            let aiPlacementRating = (gwa * 0.6) + (examPercentage * 0.4);
-            
-            const rulesSnap = await get(dbRef(db, 'placement_rules'));
-            const rules = rulesSnap.exists() ? rulesSnap.val() : {};
-            let recommendedTrack = "Regular Section";
-            
-            if (studentData.grade_level === "Grade 11") {
-                let g11Strands = [];
-                if(rules.STEM) g11Strands.push({ name: 'STEM', threshold: parseFloat(rules.STEM.threshold) || 0 });
-                if(rules.ICT) g11Strands.push({ name: 'ICT', threshold: parseFloat(rules.ICT.threshold) || 0 });
-                if(rules.EIM) g11Strands.push({ name: 'EIM', threshold: parseFloat(rules.EIM.threshold) || 0 });
-                if(rules.SMAW) g11Strands.push({ name: 'SMAW', threshold: parseFloat(rules.SMAW.threshold) || 0 });
-                
-                g11Strands.sort((a, b) => b.threshold - a.threshold); 
-                recommendedTrack = "GAS / Regular";
-                
-                for (let i = 0; i < g11Strands.length; i++) {
-                    if (aiPlacementRating >= g11Strands[i].threshold) {
-                        recommendedTrack = g11Strands[i].name;
-                        break;
-                    }
-                }
-            } else {
-                let steThreshold = rules.STE ? (parseFloat(rules.STE.threshold) || 0) : 85;
-                if (aiPlacementRating >= steThreshold) {
-                    recommendedTrack = "STE";
-                }
-            }
-            
-            await update(dbRef(db, 'students/' + studentLrnGlobal), {
-                exam_score_raw: totalRaw,
-                exam_score_percent: examPercentage,
-                ai_placement_rating: aiPlacementRating.toFixed(2),
-                exam_status: "Exam Completed",
-                track: recommendedTrack,
-                program: recommendedTrack
+            const finalResult = await callExamApi({
+                action: 'finalize',
+                lrn: studentLrnGlobal,
+                sessionId: studentSessionId
             });
+
+            const { totals, totalRaw, totalMaximum, examPercentage, aiPlacementRating } = finalResult;
             
             Swal.close();
             document.getElementById('timerDisplay').style.display = 'none';
             document.getElementById('subjectMenuScreen').classList.remove('active');
             document.getElementById('examTitleLevel').innerText = "Final Result";
             document.getElementById('resultDescText').innerHTML = `
-                <span class="student-result-name">${getStudentName()}</span>
+                <span class="student-result-name">${escapeHtml(finalResult.studentName)}</span>
                 <span class="student-result-label">Exam Score Summary</span>
                 <div class="score-breakdown">
-                    <div class="score-row"><span>Math</span><span>${mathScore}/${mathMax}</span></div>
-                    <div class="score-row"><span>Science</span><span>${scienceScore}/${scienceMax}</span></div>
-                    <div class="score-row"><span>English</span><span>${englishScore}/${englishMax}</span></div>
-                    <div class="score-row total"><span>Total Exam Score</span><span>${totalRaw}/${totalMax} (${examPercentage.toFixed(2)}%)</span></div>
-                    <div class="score-row rating"><span>Overall Rating</span><span>${aiPlacementRating.toFixed(2)}%</span></div>
+                    <div class="score-row"><span>Math</span><span>${totals.math.score}/${totals.math.maximum}</span></div>
+                    <div class="score-row"><span>Science</span><span>${totals.science.score}/${totals.science.maximum}</span></div>
+                    <div class="score-row"><span>English</span><span>${totals.english.score}/${totals.english.maximum}</span></div>
+                    <div class="score-row total"><span>Total Exam Score</span><span>${totalRaw}/${totalMaximum} (${examPercentage.toFixed(2)}%)</span></div>
+                    <div class="score-row rating"><span>Overall Rating</span><span>${Number(aiPlacementRating).toFixed(2)}%</span></div>
                 </div>
             `;
             document.getElementById('resultScreen').classList.add('active');
         } catch (error) {
-            console.error(error);
-            Swal.fire({title: 'Final Submission Failed', text: 'Error saving final results to the database.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
+            console.error('Final exam submission failed:', error);
+            Swal.fire({title: 'Final Submission Failed', text: error.message || 'Could not save final results.', icon: 'error', heightAuto: false, customClass: { popup: 'rounded-modal' }});
         }
     }
 
