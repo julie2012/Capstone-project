@@ -165,33 +165,70 @@
         }
         .score-breakdown {
             display: grid;
-            gap: 10px;
-            margin: 14px 0 0;
+            gap: 0;
+            margin: 10px 0 0;
             text-align: left;
         }
-        .score-row {
+        .subject-score-row {
+            padding: 9px 0 8px;
+            border-bottom: 1px solid #edf1f6;
+        }
+        .subject-score-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            padding: 12px 14px;
-            background: rgba(248, 250, 252, 0.84);
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
+            gap: 10px;
+            margin-bottom: 6px;
+            color: #1e293b;
+            font-size: 12px;
             font-weight: 800;
         }
-        .score-row span:first-child { color: var(--text-muted); }
-        .score-row span:last-child { color: var(--text-dark); font-size: 15px; text-align: right; }
-        .score-row.total,
-        .score-row.rating {
-            background: #eff6ff;
-            border-color: #bfdbfe;
+        .subject-score-value { color: var(--text-dark); font-size: 13px; }
+        .subject-progress-track {
+            height: 6px;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #edf1f6;
         }
-        .score-row.rating span:last-child {
-            color: var(--secondary);
-            font-size: 18px;
+        .subject-progress-fill {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: #1e4f9a;
+            transition: width 0.5s ease;
+        }
+        .summary-score-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #f4f6f8;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .summary-score-row strong {
+            color: #111827;
+            font-size: 13px;
+            text-align: right;
+        }
+        .summary-score-row.rating {
+            background: #d7e8ff;
+            color: #24518f;
+        }
+        .summary-score-row.rating strong {
+            color: #174b9a;
+            font-size: 17px;
             font-weight: 900;
+        }
+        #resultScreen > .btn {
+            margin-top: 14px;
+            padding: 11px 14px;
+            border-radius: 9px;
         }
 
         .nav-buttons { display: flex; justify-content: space-between; gap: 15px; }
@@ -213,15 +250,11 @@
         .option-label input[type="radio"]:checked ~ .option-text { color: var(--secondary); font-weight: 800; }
         .option-label.selected { border-color: var(--secondary); background: #eff6ff; box-shadow: 0 5px 20px var(--secondary-glow); transform: scale(1.02); }
 
-        .result-icon { font-size: 70px; color: var(--primary); margin-bottom: 15px; text-align: center; animation: popIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        
-        .result-title { text-align: center; font-size: 30px; font-weight: 900; margin-bottom: 12px; letter-spacing: -1px; color: var(--text-dark); }
-        .result-desc { text-align: center; color: var(--text-muted); line-height: 1.6; font-size: 14px; font-weight: 500; background: rgba(248, 250, 252, 0.88); padding: 20px; border-radius: 16px; border: 1px solid #dbeafe; }
+        .result-desc { text-align: center; color: var(--text-muted); line-height: 1.45; font-size: 14px; font-weight: 500; background: #fff; padding: 15px 16px; border-radius: 12px; border: 1px solid #e2e8f0; }
         .student-result-name {
             display: block;
             color: var(--text-dark);
-            font-size: 20px;
+            font-size: 17px;
             font-weight: 900;
             line-height: 1.2;
             margin-bottom: 4px;
@@ -233,7 +266,7 @@
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
         }
         
         .rounded-modal { border-radius: 20px !important; padding: 20px !important; }
@@ -305,10 +338,7 @@
 
     <!-- 4. FINAL RESULT SCREEN -->
     <div id="resultScreen">
-        <div class="result-icon"><i class="fa-solid fa-shield-check"></i></div>
-        <h2 class="result-title">Final Results</h2>
-        <div class="result-desc" id="resultDescText">Your responses have been successfully encoded to the system. The AI Placement Engine will formulate your results along with your GWA. You will receive an automated SMS regarding your designated track.</div>
-        <br>
+        <div class="result-desc" id="resultDescText" aria-live="polite"></div>
         <button class="btn btn-outline" style="width: 100%;" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Return to Main Menu</button>
     </div>
 </div>
@@ -652,15 +682,27 @@
             document.getElementById('timerDisplay').style.display = 'none';
             document.getElementById('subjectMenuScreen').classList.remove('active');
             document.getElementById('examTitleLevel').innerText = "Final Result";
+            const subjectProgressRow = (name, subject) => {
+                const score = Number(subject.score) || 0;
+                const maximum = Number(subject.maximum) || 0;
+                const percent = maximum > 0 ? Math.max(0, Math.min(100, (score / maximum) * 100)) : 0;
+                return `
+                    <div class="subject-score-row">
+                        <div class="subject-score-head"><span>${name}</span><span class="subject-score-value">${score}/${maximum}</span></div>
+                        <div class="subject-progress-track" role="progressbar" aria-label="${name} score" aria-valuemin="0" aria-valuemax="${maximum}" aria-valuenow="${score}">
+                            <span class="subject-progress-fill" style="width:${percent}%;"></span>
+                        </div>
+                    </div>`;
+            };
             document.getElementById('resultDescText').innerHTML = `
                 <span class="student-result-name">${escapeHtml(finalResult.studentName)}</span>
                 <span class="student-result-label">Exam Score Summary</span>
                 <div class="score-breakdown">
-                    <div class="score-row"><span>Math</span><span>${totals.math.score}/${totals.math.maximum}</span></div>
-                    <div class="score-row"><span>Science</span><span>${totals.science.score}/${totals.science.maximum}</span></div>
-                    <div class="score-row"><span>English</span><span>${totals.english.score}/${totals.english.maximum}</span></div>
-                    <div class="score-row total"><span>Total Exam Score</span><span>${totalRaw}/${totalMaximum} (${examPercentage.toFixed(2)}%)</span></div>
-                    <div class="score-row rating"><span>Overall Rating</span><span>${Number(aiPlacementRating).toFixed(2)}%</span></div>
+                    ${subjectProgressRow('Math', totals.math)}
+                    ${subjectProgressRow('Science', totals.science)}
+                    ${subjectProgressRow('English', totals.english)}
+                    <div class="summary-score-row"><span>Total exam score</span><strong>${totalRaw}/${totalMaximum} (${examPercentage.toFixed(2)}%)</strong></div>
+                    <div class="summary-score-row rating"><span>Overall rating</span><strong>${Number(aiPlacementRating).toFixed(2)}%</strong></div>
                 </div>
             `;
             document.getElementById('resultScreen').classList.add('active');
