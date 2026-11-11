@@ -1658,7 +1658,7 @@
             let trackOptions = '';
             if (user.gradeLevel === "Grade 11") {
                 trackOptions = `
-                    <option value="AUTO" selected>🤖 Auto-Compute (AI Placement)</option>
+                    <option value="" selected disabled>Select a track manually</option>
                     <option value="STEM">STEM</option>
                     <option value="ICT">ICT</option>
                     <option value="EIM">EIM</option>
@@ -1667,8 +1667,9 @@
                 `;
             } else {
                 trackOptions = `
-                    <option value="AUTO" selected>🤖 Auto-Compute (AI Placement)</option>
+                    <option value="" selected disabled>Select a track/section manually</option>
                     <option value="STE">STE</option>
+                    <option value="Regular Section">Regular Section</option>
                     <option value="Section A">Section A</option>
                     <option value="Section B">Section B</option>
                     <option value="Section C">Section C</option>
@@ -1701,12 +1702,10 @@
                 didOpen: () => {
                     const trackInput = document.getElementById('swal-track-input');
                     const interviewField = document.getElementById('swal-interview-score-field');
-                    const savedTrack = studentRecord.program || studentRecord.track || user.assignedStrand;
                     const updateInterviewVisibility = () => {
                         const selectedTrack = trackInput.value;
                         const showForSelectedTrack = applicantRequiresInterview(user.gradeLevel, selectedTrack);
-                        const showForSavedTrack = applicantRequiresInterview(user.gradeLevel, savedTrack);
-                        interviewField.style.display = showForSelectedTrack || showForSavedTrack ? 'block' : 'none';
+                        interviewField.style.display = showForSelectedTrack ? 'block' : 'none';
                     };
                     trackInput.addEventListener('change', updateInterviewVisibility);
                     updateInterviewVisibility();
@@ -1720,6 +1719,7 @@
                     const track = document.getElementById('swal-track-input').value;
                     const gradeValues = [mathematics, science, english].map(Number);
                     if ([mathematics, science, english].some(value => value === '') || gradeValues.some(value => !Number.isFinite(value) || value < 0 || value > 100)) { Swal.showValidationMessage('Enter valid Mathematics, Science, and English grades from 0 to 100.'); return false; }
+                    if (!track) { Swal.showValidationMessage('Select the student’s track or section manually.'); return false; }
                     if (interviewScore !== '' && (!Number.isFinite(Number(interviewScore)) || Number(interviewScore) < 0 || Number(interviewScore) > 100)) { Swal.showValidationMessage('Interview score must be from 0 to 100.'); return false; }
                     return { grades: { mathematics: Number(mathematics), science: Number(science), english: Number(english) }, interviewScore, track };
                 }
@@ -1734,8 +1734,8 @@
                 
                 try {
                     let recommendedTrack = user.assignedStrand;
-                    const isSteCandidate = user.gradeLevel === 'Grade 7' && (manualTrack === 'STE' || studentRecord.program === 'STE' || studentRecord.track === 'STE' || user.assignedStrand === 'STE');
-                    const isStemCandidate = user.gradeLevel === 'Grade 11' && (manualTrack === 'STEM' || studentRecord.program === 'STEM' || studentRecord.track === 'STEM' || user.assignedStrand === 'STEM');
+                    const isSteCandidate = user.gradeLevel === 'Grade 7' && manualTrack === 'STE';
+                    const isStemCandidate = user.gradeLevel === 'Grade 11' && manualTrack === 'STEM';
                     let qualificationStatus = null;
                     let qualificationThreshold = null;
 
@@ -1755,33 +1755,7 @@
                         recommendedTrack = targetProgram;
                     }
 
-                    if (!isSteCandidate && !isStemCandidate && manualTrack === "AUTO") {
-                        
-                        if (user.gradeLevel === "Grade 11") {
-                            let g11Strands = [];
-                            if(rules.STEM) g11Strands.push({ name: 'STEM', threshold: parseFloat(rules.STEM.threshold) || 0 });
-                            if(rules.ICT) g11Strands.push({ name: 'ICT', threshold: parseFloat(rules.ICT.threshold) || 0 });
-                            if(rules.EIM) g11Strands.push({ name: 'EIM', threshold: parseFloat(rules.EIM.threshold) || 0 });
-                            if(rules.SMAW) g11Strands.push({ name: 'SMAW', threshold: parseFloat(rules.SMAW.threshold) || 0 });
-                            
-                            g11Strands.sort((a, b) => b.threshold - a.threshold); 
-                            
-                            recommendedTrack = "GAS / Regular"; 
-                            for (let i = 0; i < g11Strands.length; i++) {
-                                if (finalRating >= g11Strands[i].threshold) {
-                                    recommendedTrack = g11Strands[i].name;
-                                    break;
-                                }
-                            }
-                        } else if (user.gradeLevel === "Grade 7") {
-                            let steThreshold = rules.STE ? (parseFloat(rules.STE.threshold) || 0) : 85;
-                            if (finalRating >= steThreshold) {
-                                recommendedTrack = "STE";
-                            } else {
-                                recommendedTrack = "Regular Section";
-                            }
-                        }
-                    } else if (!isSteCandidate && !isStemCandidate) {
+                    if (!isSteCandidate && !isStemCandidate) {
                         recommendedTrack = manualTrack;
                     }
 
@@ -1794,10 +1768,15 @@
                         program: recommendedTrack
                     };
                     if (formValues.interviewScore !== '') updatePayload.interview_score = Number(formValues.interviewScore);
+                    else if (!applicantRequiresInterview(user.gradeLevel, recommendedTrack)) updatePayload.interview_score = null;
                     if (qualificationStatus) {
                         updatePayload.qualification_status = qualificationStatus;
                         updatePayload.qualification_score = finalRating;
                         updatePayload.qualification_threshold = qualificationThreshold;
+                    } else {
+                        updatePayload.qualification_status = null;
+                        updatePayload.qualification_score = null;
+                        updatePayload.qualification_threshold = null;
                     }
 
                     if (user.gradeLevel === "Grade 7") {
