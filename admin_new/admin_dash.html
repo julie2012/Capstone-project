@@ -511,6 +511,7 @@
                     <div class="v-title">List of Students</div>
                     
                     <div style="display: flex; gap: 12px; align-items: center;">
+                        <button class="btn-print" id="print-verification-list" onclick="printVerificationList()" hidden><i class="fa-solid fa-print"></i> Print List</button>
                         <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 16px; display: flex; align-items: center; gap: 10px; width: 280px;">
                             <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 13px;"></i>
                             <input type="text" id="verification-search-input" placeholder="Search student name or LRN..." style="border: none; outline: none; background: transparent; width: 100%; font-size: 13px; font-weight: 600; color: var(--text-dark);">
@@ -1095,6 +1096,8 @@
             currentActiveSection = filterSection;
             const tableBody = document.getElementById('table-body');
             if(!tableBody) return;
+            const printListButton = document.getElementById('print-verification-list');
+            if (printListButton) printListButton.hidden = !(['STEM', 'ICT', 'EIM', 'SMAW'].includes(filterSection));
             
             tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 30px; color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 18px; color: #17971d; margin-bottom: 6px;"></i><p style="font-size:11px;">Syncing calculations matrix parameters real-time...</p></td></tr>`;
 
@@ -1192,7 +1195,7 @@
             const tableBody = document.getElementById('table-body');
             const generatedAt = new Date().toLocaleString();
             const title = `${currentActiveSection} - List of Students`;
-            const printColumns = Array.from(tableHead ? tableHead.querySelectorAll('th') : []).map((th, index) => ({ label: th.innerText.trim(), index })).filter(col => col.label !== 'Actions');
+            const printColumns = Array.from(tableHead ? tableHead.querySelectorAll('th') : []).map((th, index) => ({ label: th.innerText.trim(), index })).filter(col => ['Student Name', 'LRN No.'].includes(col.label));
             const printRows = Array.from(tableBody ? tableBody.querySelectorAll('tr') : []).map(row => {
                 const cells = Array.from(row.children);
                 if (cells.length === 1) return `<tr><td colspan="${printColumns.length}" style="text-align:center;">${cells[0].innerText}</td></tr>`;
